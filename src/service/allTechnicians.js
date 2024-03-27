@@ -1,5 +1,5 @@
 
-import axios from 'axios';
+// import axios from 'axios';
 
 const accesstoken = localStorage.getItem('access_token');
 console.log(accesstoken);
@@ -54,7 +54,7 @@ export async function nearestTech(latitude, longitude, skillSet) {
   const accesstoken = localStorage.getItem('access_token');
   console.log(accesstoken);
   try {
-      console.log("inside the function in service")
+      // console.log("inside the function in service")
     // Encode skill set for URL
     const encodedSkillSet = encodeURIComponent(skillSet);
 
@@ -70,12 +70,57 @@ export async function nearestTech(latitude, longitude, skillSet) {
     const data = await response.json();
 
     // Log response from nearest technician
-    console.log("Response from Nearest Technician from function:", data);
+    // console.log("Response from Nearest Technician from function:", data);
 
     return data; // Return response data if needed
   } catch (error) {
     console.error("Error fetching nearest technician:", error);
     throw error; // Propagate error if needed
+  }
+}
+
+import axios from 'axios';
+
+export async function assignManually(selectedTechnicianId, ticketId) {
+  const accesstoken = localStorage.getItem('access_token');
+  console.log("This function is getting called from allTechnician.js file");
+  console.log("Selected technician ID:", selectedTechnicianId);
+  console.log("Ticket ID:", ticketId);
+  const headers = {
+    Authorization: `Bearer ${accesstoken}`,
+  };
+  try {
+    // Make the API call to assign technician to ticket using PUT method
+    const response = await axios.put(
+      `http://127.0.0.1:8000/tickets/assign_ticket?ticket_id=${ticketId}&technician_id=${selectedTechnicianId}`,
+      null, // No data payload for a PUT request
+      { headers: headers } // Pass headers here
+    );
+
+    // Check if the response status is 200 (or any other success status code)
+    if (response.status === 200) {
+      // Display a message indicating that the page will refresh
+      console.log("Page will refresh in 3 seconds...");
+
+      // Start a countdown timer
+      let count = 3;
+      const timer = setInterval(() => {
+        console.log(`Refreshing in ${count}...`);
+        count--;
+
+        // When countdown finishes, reload the page
+        if (count === 0) {
+          clearInterval(timer);
+          // Reload the page
+          window.location.reload();
+        }
+      }, 1000);
+    } else {
+      // Handle other status codes if needed
+      console.log("Failed to assign technician to ticket:", response.data.message);
+    }
+  } catch (error) {
+    console.error("Error assigning technician to ticket:", error);
   }
 }
 
