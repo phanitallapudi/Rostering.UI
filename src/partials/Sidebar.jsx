@@ -114,7 +114,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </h3> */}
             <ul className="mt-3 ml-6 flex flex-col justify-center items-start">
               {/* Dashboard */}
-              <Link to="/" className='hover:bg-gray-700 px-10 w-44 py-3 rounded-md text-white'>
+              <Link to="/dashboard" className='hover:bg-gray-700 px-10 w-44 py-3 rounded-md text-white'>
                 Dashboard
               </Link>
               <Link to="/tickets" className='hover:bg-gray-700 w-44 px-10 py-3 rounded-md text-white'>
@@ -129,7 +129,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               <Link to="/analytics" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
                 Analytics
               </Link>
-              <Link to="/" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
+              <Link to="/settings" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
                 Settings
               </Link>
               <Link to="/" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
