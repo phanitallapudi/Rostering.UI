@@ -87,10 +87,8 @@ const SingleTicket = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedTechnician, setSelectedTechnician] = useState(null);
   //const accesstoken = localStorage.getItem('access_token');
-  
 
-  const accesstoken = localStorage.getItem('access_token');
-
+  const accesstoken = localStorage.getItem("access_token");
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_MAP_API_KEY,
@@ -162,7 +160,7 @@ const SingleTicket = () => {
   const handleSubmit = () => {
     console.log("Selected technician ID:", selectedTechnician);
     assignManually(selectedTechnician, id);
-  }
+  };
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -224,7 +222,7 @@ const SingleTicket = () => {
                         </div>
                         <div className="bg-gray-50 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500">
-                            Assigned To
+                           Auto Assign 
                           </dt>
                           <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
                             {ticket.assigned_to.name}
@@ -234,7 +232,7 @@ const SingleTicket = () => {
                           <dt className="text-sm font-medium text-gray-500">
                             Assign Manually
                           </dt>
-                          <div className="relative mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-1">
+                          <div className="relative mt-1 text-sm capitalize text-gray-900 sm:mt-0 ">
                             {/* <select
                               className="block w-full border border-gray-300 rounded px-3 py-1"
                               value={selectedTechnician}
@@ -263,48 +261,61 @@ const SingleTicket = () => {
                                 )
                               )}
                             </select> */}
+                            <div className="flex flex-row w-64 ">
+
                             <select
-  className="block w-full border border-gray-300 rounded px-3 py-1"
-  value={selectedTechnician}
-  onChange={(e) => {
-    setSelectedTechnician(e.target.value);
-    console.log("this is technician id", e.target.value);
-  }}
->
-  <option value="">Select</option>
-  {technicians.map(
-    ({
-      _id,
-      name,
-      day_schedule, // Add day_schedule to technician object destructuring
-    }) => (
-      <option
-        key={_id}
-        value={_id}
-        disabled={day_schedule === "booked"} // Disable option if day_schedule is "booked"
-        style={{
-          backgroundColor: day_schedule === "free" ? "lightgreen" : "lightgrey", // Set background color
-          color: day_schedule === "booked" ? "gray" : "black", // Set text color
-        }}
-      >
-        {name}
-      </option>
-    )
-  )}
-</select>
+                              className="block w-full border border-gray-300 rounded px-3 py-1"
+                              value={selectedTechnician}
+                              onChange={(e) => {
+                                setSelectedTechnician(e.target.value);
+                                console.log(
+                                  "this is technician id",
+                                  e.target.value
+                                  );
+                              }}
+                            >
+                              <option value="">Select</option>
+                              {technicians.map(
+                                ({
+                                  _id,
+                                  name,
+                                  day_schedule, // Add day_schedule to technician object destructuring
+                                }) => (
+                                  <option
+                                  key={_id}
+                                  value={_id}
+                                    disabled={day_schedule === "booked"} // Disable option if day_schedule is "booked"
+                                    style={{
+                                      backgroundColor:
+                                      day_schedule === "free"
+                                      ? "lightgreen"
+                                          : "lightgrey", // Set background color
+                                          color:
+                                          day_schedule === "booked"
+                                          ? "gray"
+                                          : "black", // Set text color
+                                        }}
+                                        >
+                                    {name}
+                                  </option>
+                                )
+                                )}
+                            </select>
 
-
-                            <button onClick={handleSubmit} className=" mt-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Submit</button>
+                            <button
+                              onClick={handleSubmit}
+                              className=" mt-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ml-2"
+                              >
+                              Submit
+                            </button>
+                            </div>
                           </div>
                         </div>
-
-
                       </>
                     )}
                   </dl>
                 </div>
               </div>
-
             </div>
             <div>
               {/* <h3>Hello</h3> */}
@@ -312,10 +323,10 @@ const SingleTicket = () => {
                 <div class="bg-white min-w-[400px] shadow overflow-hidden sm:rounded-lg">
                   <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Roster Details
+                      Technician Details
                     </h3>
                     <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                      Details Informations About Assistant
+                      Detailed Information About Technician
                     </p>
                   </div>
                   <div class="border-t border-gray-200">
@@ -375,7 +386,6 @@ const SingleTicket = () => {
                     </dl>
                   </div>
                 </div>
-
               </div>
             </div>
 

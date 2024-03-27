@@ -122,3 +122,18 @@ export async function assignManually(selectedTechnicianId, ticketId) {
   }
 }
 
+
+export const fetchTicketGraphs = async () => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_tickets`,
+    {
+      headers: {
+        Authorization: `Bearer ${accesstoken}`,
+      },
+    }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching ticket:', error);
+  }
+};

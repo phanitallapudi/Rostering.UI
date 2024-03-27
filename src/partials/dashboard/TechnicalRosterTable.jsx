@@ -147,7 +147,7 @@ const TechnicalRosterTable = () => {
                 <td className="capitalize px-6 py-4">{technician.skill_set}</td>
                 <td className="capitalize px-6 py-4 text-center">{technician.rating}</td>
                 <td className="capitalize px-6 py-4 text-center">{technician.experience_years}</td>
-                <td className="capitalize px-6 py-4">{technician.current_location.join(', ')}</td>
+                <td className="capitalize px-6 py-4">{technician.address}</td>
                 <td className="capitalize px-6 py-4">
                 <div className={`px-1 py-1 w-16 text-center rounded-xl ${technician.day_schedule.toLowerCase() === 'booked' ? 'bg-gray-400 text-white' : (technician.day_schedule.toLowerCase() === 'free' ? 'bg-green-400 text-white' : '')}`}>
                     {technician.day_schedule}

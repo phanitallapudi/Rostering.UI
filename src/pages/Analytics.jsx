@@ -1,15 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Sidebar from "../partials/Sidebar";
-import WelcomeBanner from "../partials/dashboard/WelcomeBanner";
-import DashboardAvatars from "../partials/dashboard/DashboardAvatars";
 import Banner from "../partials/Banner";
 import AnalyticsReport from "../partials/dashboard/AnalyticsReport";
 import { Divider } from "@mui/material";
 import Header from "../partials/Header";
+import AnalyticsGraphs from "../components/AnalyticsGraphs";
+import { fetchTicketGraphs } from "../service/allTechnicians";
 
 function Analytics() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [tikcetsGraph, setTicketGraph] = useState([]);
+
+  useEffect(()=> {
+    const fetchTicektsGraphsData = async () => {
+      try {
+        const data = await fetchTicketGraphs();
+        console.log(data);
+        setTicketGraph(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchTicektsGraphsData();
+  },[])
+
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -21,8 +37,6 @@ function Analytics() {
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            {/* Welcome banner */}
-            {/* <WelcomeBanner /> */}
             <Divider class="text-3xl">Analytics & Report</Divider>
             {/* Dashboard actions */}
             <div className="sm:flex sm:justify-between sm:items-center mb-2">
@@ -32,7 +46,8 @@ function Analytics() {
           </div>
           <div className="px-4 sm:px-6 lg:px-8 py-4 w-full max-w-9xl mx-auto">
             {/* Replace TicketsTable with AnalyticsReport */}
-            <AnalyticsReport />
+            {/* <AnalyticsReport /> */}
+            <AnalyticsGraphs graphs = {tikcetsGraph} />
           </div>
         </main>
         <Banner />
