@@ -1,0 +1,20 @@
+.star-rating {
+    display: flex;
+   }
+   
+   .star {
+    width: 20px;
+    height: 20px;
+    margin-right: 2px;
+   }
+   
+   .star.filled {
+    background-image: url('../svg/filledstar.svg');
+    background-size: cover;
+   }
+   
+   .star.empty {
+    background-image: url('../svg/emptystar.svg');
+    background-size: cover;
+   }
+   
