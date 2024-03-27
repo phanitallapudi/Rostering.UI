@@ -129,7 +129,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               <Link to="/analytics" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
                 Analytics
               </Link>
-              <Link to="/" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
+              <Link to="/settings" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
                 Settings
               </Link>
               <Link to="/" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
