@@ -15,32 +15,6 @@ function DashboardCard01() {
           {/* Icon */}
           <IoTicketSharp size={45} className="mb-5" />
           {/* Menu button */}
-          <EditMenu align="right" className="relative inline-flex">
-            <li>
-              <Link
-                className="font-medium text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-200 flex py-1 px-3"
-                to="#0"
-              >
-                Option 1
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="font-medium text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-200 flex py-1 px-3"
-                to="#0"
-              >
-                Option 2
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="font-medium text-sm text-rose-500 hover:text-rose-600 flex py-1 px-3"
-                to="#0"
-              >
-                Remove
-              </Link>
-            </li>
-          </EditMenu>
         </header>
         <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-2">
           New Tickets
