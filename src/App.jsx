@@ -22,6 +22,7 @@ import TicketManagement from './pages/TicketManagement';
 import SingleTicket from './pages/SingleTicket';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
+import AnalyticsGraphsTechnician from './components/AnalyticsGraphsTechnician';
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
         <Route exact path="/analytics" element={<Analytics />} />
         <Route exact path="/settings" element={<Settings />} />
         <Route exact path="/roster" element={<Roster />} />
+        <Route exact path="/technicianGraph" element={<AnalyticsGraphsTechnician />} />
         <Route exact path="/tickets/:id" element={<SingleTicket/>} />
       </Routes>
     </>
