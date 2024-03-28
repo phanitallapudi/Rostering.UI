@@ -143,7 +143,6 @@ const TechnicalRosterTable = () => {
               <th scope="col" className="px-6 py-3">Location</th>
               <th scope="col" className="px-6 py-3">Schedule</th>
               <th scope="col" className="px-6 py-3">Phone</th>
-              <th scope="col" className="px-6 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -163,9 +162,6 @@ const TechnicalRosterTable = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4">{technician.phoneno}</td>
-                <td className="px-6 py-4 text-center">
-                  <FaRegEye className="cursor-pointer" size={25} />
-                </td>
               </tr>
             ))}
           </tbody>
