@@ -124,6 +124,8 @@ export async function assignManually(selectedTechnicianId, ticketId) {
 
 
 export const fetchTicketGraphs = async () => {
+  const accesstoken = localStorage.getItem('access_token');
+  console.log(accesstoken);
   try {
     const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_tickets`,
     {
@@ -141,6 +143,8 @@ export const fetchTicketGraphs = async () => {
 
 
 export const fetchTechniciansGraphs = async () => {
+  const accesstoken = localStorage.getItem('access_token');
+  console.log(accesstoken);
   try {
     const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_technicians`,
     {

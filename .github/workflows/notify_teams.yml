@@ -1,0 +1,26 @@
+name: Notify Teams on Main Branch Merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send_notification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get Committer Username
+        id: get_username
+        run: echo "::set-output name=username::$(git log -1 --pretty=format:'%an')"
+
+      - name: Send Teams Notification
+        env:
+          WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          USERNAME: ${{ steps.get_username.outputs.username }}
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d '{
+            "text": "Hey everyone, new code for the frontend has been merged into the main branch by '$USERNAME'!"
+          }' $WEBHOOK_URL
