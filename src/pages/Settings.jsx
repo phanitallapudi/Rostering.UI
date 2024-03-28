@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import axios from 'axios';
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
-import WelcomeBanner from "../partials/dashboard/WelcomeBanner";
-import Banner from "../partials/Banner";
-import axios from 'axios';
 
-function Settings() {
+import UploadFile from "../images/upload.png";
+
+const Settings = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [file, setFile] = useState(null);
-  const accessToken = localStorage.getItem('access_token')
+  const accessToken = localStorage.getItem('access_token');
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+  const handleFileInputChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    setFile(droppedFile);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   const handleFileUpload = async () => {
@@ -19,12 +30,18 @@ function Settings() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await axios.post('http://localhost:8000/technicians/upload_technician_files', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${accessToken}` // Replace accessToken with your actual access token
+      const response = await axios.post(
+        "http://localhost:8000/technicians/upload_technician_files",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            accept: "application/json",
+            'Authorization': `Bearer ${accessToken}`,
+          },
         }
-      });
+      );
 
       console.log(response.data); // Handle response as needed
     } catch (error) {
@@ -43,57 +60,40 @@ function Settings() {
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <main>
-          <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            {/* Welcome banner */}
-            <div className="flex justify-end ml-8 items-center w-3/5 mb-5 ">
-            <h1 className="text-3xl justify-start">Add Technicians By Uploading Files</h1>
-            </div>
-            {/* Dashboard actions */}
-            <div className="flex justify-center items-center flex-col">
-              <div className="flex items-center justify-center w-3/5">
-                <label
-                  htmlFor="dropzone-file"
-                  className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg
-                      className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 16"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                      />
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-semibold">Click to upload</span> or drag
-                      and drop
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      CSV 
-                    </p>
-                  </div>
-                  <input id="dropzone-file" type="file" className="hidden" onChange={handleFileChange} />
-                </label>
-              </div>
-              <div className="flex w-3/5 mt-4 justify-end">
-            <button className="text-gray-900 bg-blue-600 border border-blue-300 focus:outline-none hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onClick={handleFileUpload}>Upload File</button>
-              </div>
-            </div>
-            {/* Cards */}
-          </div>
-        </main>
-
-        <Banner />
+    <div className="modal w-11/12 md:w-3/4 lg:w-1/2 xl:w-3/5 mx-auto mt-10 mb-10 bg-white rounded-md shadow-md">
+      {/* <div className="modal-header flex items-start justify-between px-6 py-6"> */}
+        {/* <div className="modal-logo">
+          <span className="logo-circle w-14 h-14 flex justify-center items-center rounded-full bg-blue-200">
+            // svg logo
+          </span>
+        </div> */}
+        {/* <button className="btn-close flex items-center justify-center w-10 h-10 rounded-md border border-transparent hover:bg-blue-200 focus:outline-none focus:bg-blue-200">
+          // Close Icon
+        </button> */}
+      {/* </div> */}
+      <div className="modal-body px-6 py-4">
+        <h2 className="modal-title text-xl font-semibold mt-2">Upload a file</h2>
+        <p className="modal-description text-gray-500">Attach the CSV file below</p>
+        <label htmlFor="fileInput" className="upload-area relative block mt-5 border border-dashed border-gray-400 rounded-lg bg-white px-12 py-8 text-center w-full cursor-pointer hover:border-blue-400 focus:border-blue-400 focus:outline-none" onDrop={handleDrop} onDragOver={handleDragOver}>
+          <span className="upload-area-icon inline-block">
+            <img src={UploadFile} width={"40px"} alt="" />
+          </span>
+          <span className="upload-area-title font-semibold text-gray-800 block mt-1">Drag file(s) here to upload.</span>
+          <span className="upload-area-description text-gray-500 block mt-1">
+            Alternatively, you can select a CSV file by <br /><strong>Clicking here</strong>
+          </span>
+          <input type="file" id="fileInput" className="hidden" onChange={handleFileInputChange} />
+        </label>
+      </div>
+      <div className="modal-footer flex justify-end px-6 py-4">
+        <button className="btn-secondary py-2 px-4 bg-transparent border border-gray-400 rounded-md font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:border-blue-400">Cancel</button>
+        <button className="btn-primary py-2 px-4 bg-blue-500 rounded-md font-medium text-white hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ml-3" onClick={handleFileUpload}>Upload File</button>
       </div>
     </div>
+    </main>
+    </div>
+    </div>
   );
-}
+};
 
 export default Settings;

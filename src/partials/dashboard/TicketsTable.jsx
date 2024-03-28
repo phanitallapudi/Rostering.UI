@@ -9,8 +9,6 @@ import High from '../../images/priority/high.png';
 import Medium from '../../images/priority/medium.png';
 import Low from '../../images/priority/low.png';
 
-
-
 const TicketsTable = () => {
   const [tickets, setTickets] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
@@ -27,7 +25,6 @@ const TicketsTable = () => {
         const data = await getAllTickets();
         setTickets(data);
         setFilteredTickets(data);
-        console.log(data);
       } catch (error) {
         setErrorMessage(error.message);
       }
@@ -65,6 +62,13 @@ const TicketsTable = () => {
     setSortPriority(sortPriority === 'asc' ? 'desc' : 'asc');
   };
   
+  const resetFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('');
+    setSortPriority('asc');
+    setCurrentPage(1);
+    setFilteredTickets(tickets);
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -98,6 +102,9 @@ const TicketsTable = () => {
           <Button onClick={() => handleSort('priority')}>
             Sort by Priority
           </Button>
+          <Button onClick={resetFilters}>
+            Reset
+          </Button>
         </div>
       </div>
       <div className="relative overflow-x-auto">
@@ -116,9 +123,6 @@ const TicketsTable = () => {
               <th scope="col" className="px-6 py-3 text-center">
                 Priority
               </th>
-              {/* <th scope="col" className="px-6 py-3">
-                Assigned to
-              </th> */}
               <th scope="col" className="px-6 py-3 text-center">
                 Actions
               </th>
@@ -134,22 +138,18 @@ const TicketsTable = () => {
                   {index + 1}
                 </th>
                 <td className="capitalize px-6 py-4 text-center">
-                  {/* <div className="text-start"> */}
-                    {ticket.title}
-                    {/* </div> */}
+                  {ticket.title}
                 </td>
                 <td className="capitalize px-6 py-4 flex justify-center items-center">
                   <div className={`px-1 py-1 w-20 text-center rounded-xl ${ticket.status.toLowerCase() === 'open' ? 'bg-green-400 text-white' : (ticket.status.toLowerCase() === 'assigned' ? 'bg-blue-400 text-white' : (ticket.status.toLowerCase() === 'close' ? 'bg-gray-400 text-white' : ''))}`}>
                     {ticket.status}
                   </div>
                 </td>
-                {/* <td className="capitalize px-6 py-4 text-center">{ticket.priority}</td> */}
                 <td className="capitalize px-6 py-4 text-center">
                   <div className="inline-block">
                     {ticket.priority === 1 ? <img src={Low} width={"30px"} alt="Low" /> : ticket.priority === 2 ? <img src={Medium} width={"30px"} alt="Medium" /> : <img src={High} width={"30px"} alt="High" />}
                   </div>
                 </td>
-                {/* <td className="capitalize px-6 py-4">Radhika Merchant</td> */}
                 <td className="px-6 py-4 flex justify-center items-center">
                   <Link to={`/tickets/${ticket._id}`}>
                     <FaRegEye className="cursor-pointer" size={25}/>
