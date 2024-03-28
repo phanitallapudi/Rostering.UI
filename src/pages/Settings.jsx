@@ -84,7 +84,7 @@ const Settings = () => {
                 <input type="file" id="fileInput" className="hidden" onChange={handleFileInputChange} />
               </label>
               {fileName && (
-                <p className="mt-2 text-gray-600">File selected: {fileName}</p>
+                <p className="mt-2 text-gray-600"><span className="font-semibold">File selected: </span>{fileName}</p>
               )}
             </div>
             <div className="modal-footer flex justify-end px-6 py-4">
