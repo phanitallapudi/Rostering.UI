@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getAllTickets } from "../../service/allTechnicians";
-import { Button } from "@mui/material";
-
+import { Button, Tooltip } from "@mui/material"; // Import Tooltip
 import { FaArrowDown, FaArrowRight, FaArrowUp } from "react-icons/fa";
+import { CiCircleInfo } from "react-icons/ci";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import High from '../../images/priority/high.png';
 import Medium from '../../images/priority/medium.png';
 import Low from '../../images/priority/low.png';
@@ -121,8 +122,17 @@ const TicketsTable = () => {
                 status
               </th>
               <th scope="col" className="px-6 py-3 text-center">
-                Priority
-              </th>
+  Priority
+  <Tooltip title={
+    <div className="flex gap-3">
+    <label><img src={High} width="20" alt="High" /> High</label>
+    <label><img className="text-center ml-3" src={Medium} width="20" alt="Medium" /> Medium</label>
+    <label><img src={Low} width="20" alt="Low" /> Low</label>
+  </div>
+  }>
+    <span className="ml-1 cursor-pointer dis"><IoIosInformationCircleOutline className="inline-block" /></span>
+  </Tooltip>
+</th>
               <th scope="col" className="px-6 py-3 text-center">
                 Actions
               </th>
