@@ -142,7 +142,7 @@ export const fetchTicketGraphs = async () => {
 
 export const fetchTechniciansGraphs = async () => {
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_ technicians`,
+    const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_technicians`,
     {
       headers: {
         Authorization: `Bearer ${accesstoken}`,

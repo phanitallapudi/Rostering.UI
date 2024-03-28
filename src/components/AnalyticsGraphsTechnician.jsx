@@ -5,7 +5,8 @@ import Banner from "../partials/Banner";
 import { Divider } from "@mui/material";
 import Header from "../partials/Header";
 import AnalyticsGraphs from "../components/AnalyticsGraphs";
-import { fetchTicketGraphs } from "../service/allTechnicians";
+import { fetchTicketGraphs,fetchTechniciansGraphs  } from "../service/allTechnicians";
+import AnalyticsGraphsTechnicainDetails from "./AnalyticsGraphsTechnicainDetails";
 
 function Analytics() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -47,7 +48,7 @@ function Analytics() {
           <div className="px-4 sm:px-6 lg:px-8 py-4 w-full max-w-9xl mx-auto">
             {/* Replace TicketsTable with AnalyticsReport */}
             {/* <AnalyticsReport /> */}
-            {/* <AnalyticsGraphs technicianGraph = {technicianGraph} /> */}
+            <AnalyticsGraphsTechnicainDetails technicianGraph = {technicianGraph} />
           </div>
         </main>
         <Banner />
