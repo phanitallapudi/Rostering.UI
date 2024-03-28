@@ -28,7 +28,8 @@
     "react-icons": "^5.0.1",
     "react-minimal-pie-chart": "^8.4.0",
     "react-router-dom": "^6.20.1",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "sonner": "^1.4.41"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

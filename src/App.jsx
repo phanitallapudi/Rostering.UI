@@ -11,7 +11,7 @@ import './charts/ChartjsConfig';
 
 // Import pages
 import Dashboard from './pages/Dashboard';
-
+import { Toaster, toast } from 'sonner'
 import Sidebar from './partials/Sidebar';
 import Tickets from './pages/Tickets';
 import Roster from './pages/Roster';
@@ -36,6 +36,7 @@ function App() {
 
   return (
     <>
+    <Toaster />
       <Routes>
         <Route exact path="/" element={<Login />} />
         <Route exact path="/dashboard" element={<Dashboard />} />

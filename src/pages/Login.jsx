@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { Toaster, toast } from 'sonner'
 
 const Login = () => {
  const [username, setUsername] = useState('');
@@ -37,6 +38,7 @@ const Login = () => {
         console.log(data); // Handle the response data as needed
         // For example, you might want to save the token to local storage or context
         localStorage.setItem('access_token', data.access_token);
+        toast.success('You are successfully logged In');
         navigate("/dashboard")
         setLoading(false);
       } else {
@@ -53,6 +55,7 @@ const Login = () => {
 
  return (
     <div>
+      <Toaster />
       <div className="font-[sans-serif] text-[#333]">
         <div className="min-h-screen flex fle-col items-center justify-center py-6 px-4">
           <div className="grid md:grid-cols-2 items-center gap-10 max-w-6xl w-full">
@@ -60,15 +63,6 @@ const Login = () => {
               <h2 className="lg:text-5xl text-4xl font-extrabold lg:leading-[55px]">
                 Seamless Login for Exclusive Access
               </h2>
-              <p className="text-sm mt-10">
-                Don't have an account{" "}
-                <a
-                 href="javascript:void(0);"
-                 className="text-blue-600 font-semibold hover:underline ml-1"
-                >
-                 Register here
-                </a>
-              </p>
             </div>
             <form className="space-y-6 max-w-md md:ml-auto max-md:mx-auto w-full" onSubmit={handleLogin}>
               <h3 className="text-3xl font-extrabold mb-8 max-md:text-center">

@@ -137,3 +137,20 @@ export const fetchTicketGraphs = async () => {
     throw new Error('Error fetching ticket:', error);
   }
 };
+
+
+
+export const fetchTechniciansGraphs = async () => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_ technicians`,
+    {
+      headers: {
+        Authorization: `Bearer ${accesstoken}`,
+      },
+    }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching ticket:', error);
+  }
+};

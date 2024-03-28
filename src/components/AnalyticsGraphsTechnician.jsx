@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-
 import Sidebar from "../partials/Sidebar";
 import Banner from "../partials/Banner";
-import AnalyticsReport from "../partials/dashboard/AnalyticsReport";
+//import AnalyticsReport from "../partials/dashboard/AnalyticsReport";
 import { Divider } from "@mui/material";
 import Header from "../partials/Header";
 import AnalyticsGraphs from "../components/AnalyticsGraphs";
@@ -10,20 +9,21 @@ import { fetchTicketGraphs } from "../service/allTechnicians";
 
 function Analytics() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [tikcetsGraph, setTicketGraph] = useState([]);
+  const [technicianGraph, settechnicianGraph] = useState([]);
+  const [loadingGraphs , setIsLoadingGraphs] = useState(false);
 
   useEffect(()=> {
-    const fetchTicektsGraphsData = async () => {
+    const fetchTechnicianGraphsData = async () => {
       try {
-        const data = await fetchTicketGraphs();
+        const data = await fetchTechniciansGraphs();
         console.log(data);
-        setTicketGraph(data);
+        settechnicianGraph(data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchTicektsGraphsData();
+    fetchTechnicianGraphsData();
   },[])
 
 
@@ -47,7 +47,7 @@ function Analytics() {
           <div className="px-4 sm:px-6 lg:px-8 py-4 w-full max-w-9xl mx-auto">
             {/* Replace TicketsTable with AnalyticsReport */}
             {/* <AnalyticsReport /> */}
-            <AnalyticsGraphs graphs = {tikcetsGraph} />
+            {/* <AnalyticsGraphs technicianGraph = {technicianGraph} /> */}
           </div>
         </main>
         <Banner />

@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
-
+import { Toaster, toast } from 'sonner'
 import UploadFile from "../images/upload.png";
+import Loader from '../components/Loader';
 
 const Settings = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
   const accessToken = localStorage.getItem('access_token');
 
@@ -26,6 +28,7 @@ const Settings = () => {
   };
 
   const handleFileUpload = async () => {
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -43,14 +46,17 @@ const Settings = () => {
         }
       );
 
-      console.log(response.data); // Handle response as needed
+      console.log(response.data.message); // Handle response as needed
+      toast.success(response.data.message);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
+    setIsLoading(false);
   };
 
   return (
     <div className="flex h-screen overflow-hidden">
+      <Toaster closeButton />
       {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
@@ -87,7 +93,7 @@ const Settings = () => {
       </div>
       <div className="modal-footer flex justify-end px-6 py-4">
         <button className="btn-secondary py-2 px-4 bg-transparent border border-gray-400 rounded-md font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:border-blue-400">Cancel</button>
-        <button className="btn-primary py-2 px-4 bg-blue-500 rounded-md font-medium text-white hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ml-3" onClick={handleFileUpload}>Upload File</button>
+        <button className="btn-primary py-2 px-4 bg-blue-500 rounded-md font-medium text-white hover:bg-blue-600 focus:outline-none focus:bg-blue-600 ml-3 " onClick={handleFileUpload}>{loading ? <Loader/> : "Upload File"}</button>
       </div>
     </div>
     </main>
