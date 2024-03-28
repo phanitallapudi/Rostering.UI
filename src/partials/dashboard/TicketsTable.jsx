@@ -26,6 +26,7 @@ const TicketsTable = () => {
         const data = await getAllTickets();
         setTickets(data);
         setFilteredTickets(data);
+        console.log(data);
       } catch (error) {
         setErrorMessage(error.message);
       }
@@ -117,6 +118,9 @@ const TicketsTable = () => {
                 Id
               </th>
               <th scope="col" className="px-6 py-3 text-center">
+                uid
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
                 Title
               </th>
               <th scope="col" className="px-6 py-3 text-center">
@@ -169,6 +173,9 @@ const TicketsTable = () => {
                 >
                   {index + 1}
                 </th>
+                <td className="capitalize px-6 py-4 text-center">
+                  {ticket.uid}
+                </td>
                 <td className="capitalize px-6 py-4 text-center">
                   {ticket.title}
                 </td>
