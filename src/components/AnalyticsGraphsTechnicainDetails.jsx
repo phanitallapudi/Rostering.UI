@@ -29,7 +29,7 @@ const AnalyticsGraphsTechnicainDetails = ({ technicianGraph }) => {
           return (
             <div key={index}>
               <img
-                className="h-auto max-w-full rounded-lg"
+                className="h-auto max-w-full rounded-lg object-cover"
                 src={imageSrc}
                 alt={`Graph ${index}`}
               />
