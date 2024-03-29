@@ -1,75 +1,149 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+
+import axios from 'axios';
 
 const ChatBotUI = () => {
-    const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [conversation, setConversation] = useState([]);
+  const [askedForQuery, setAskedForQuery] = useState(false);
+  const [query, setQuery] = useState('');
+  const [askedForTicketId, setAskedForTicketId] = useState(false);
+  const [ticketId, setTicketId] = useState('');
 
-    // Function to toggle the chat div
-    const toggleChat = () => {
-       setIsChatOpen(!isChatOpen);
-    };
+  const accessToken = localStorage.getItem('access_token');
 
 
- return (
-    <div>
-      <button
-        className="fixed bottom-4 right-4 inline-flex items-center justify-center text-sm font-medium disabled:pointer-events-none disabled:opacity-50 border rounded-full w-16 h-16 bg-black hover:bg-gray-700 m-0 cursor-pointer border-gray-200 bg-none p-0 normal-case leading-5 hover:text-gray-900"
-        type="button"
-        aria-haspopup="dialog"
-        aria-expanded="false"
-        data-state="closed"
-        onClick={toggleChat}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="40"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-white block border-gray-200 align-middle"
-        >
-          <path
-            d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"
-            className="border-gray-200"
-          ></path>
-        </svg>
-      </button>
+  useEffect(() => {
+    // Initial message asking for query when component mounts
+    setTimeout(() => {
+      setConversation([
+        ...conversation,
+        { text: "Enter your query:", isUser: false }
+      ]);
+    }, 1000);
+  }, []);
 
-      {isChatOpen && (
-        <div
-          style={{ boxShadow: "0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgb(0 0 0 / 0.05)" }}
-          className="fixed bottom-[calc(4rem+1.5rem)] right-0 mr-4 bg-white p-6 rounded-lg border border-[#e5e7eb] w-[440px] h-[634px]"
-        >
-          <div className="flex flex-col space-y-1.5 pb-6">
-            <h2 className="font-semibold text-lg tracking-tight">Chatbot</h2>
-            <p className="text-sm text-[#6b7280] leading-3">
-              Powered by Mendable and Vercel
-            </p>
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const sendMessage = () => {
+    if (message.trim() === '') return;
+  
+    // Handling user input based on different stages
+    if (!askedForQuery) {
+      setQuery(message); // Set the query
+      setConversation([
+        ...conversation,
+        { text: message, isUser: true }
+      ]);
+      setAskedForQuery(true);
+      // Ask for ticket ID
+      setTimeout(() => {
+        setConversation([
+          ...conversation,
+          { text: "Enter the ticket ID:", isUser: false }
+        ]);
+      }, 1000);
+    } else if (!askedForTicketId) {
+      console.log("message: "+message);
+      setTicketId(message); // Set the ticket ID
+      setConversation([
+        ...conversation,
+        { text: message, isUser: true }
+      ]);
+      setAskedForTicketId(true);
+      // Fetch data from API
+      fetchData();
+    } else {
+      // Handle any further conversation here if needed
+    }
+    setMessage('');
+    console.log("query: "+query);
+    console.log("id: "+ticketId);
+  };
+
+  const fetchData = async () => {
+    try {
+      // Fetch data from the API using the provided query and ticket ID
+      // const response = await axios.get(`http://127.0.0.1:8000/llm/ticket_query?query=${encodeURIComponent(query)}&ticket_id=${encodeURIComponent(ticketId)}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${accessToken}`,
+      //     Accept: 'application/json', // Changed 'accept' to 'Accept'
+      //   },
+      // });
+
+      //////////////
+      const response = await axios.get('http://127.0.0.1:8000/llm/ticket_query', {
+      params: {
+        query: query,
+        ticket_id: ticketId,
+        // query: query,
+        // ticket_id: ticketId,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        // "Access-Control-Allow-Origin": "*",
+      },
+    });
+ 
+  //   console.log(response.data);
+  // } catch (error) {
+  //   console.error('Error fetching ticket information:', error);
+  // }
+  
+      // Axios automatically parses JSON response, so responseData is already an object
+      console.log(response);
+      console.log(response.data); // Access response data directly
+  
+      // Display response in conversation
+      setConversation([
+        ...conversation,
+        { text: response.data.response, isUser: false }
+      ]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  return (
+    <div className={`fixed bottom-4 right-4 border rounded-lg bg-white ${isOpen ? 'w-80' : 'w-16 h-16'}`}>
+      <div className="flex items-center justify-center h-full cursor-pointer" onClick={toggleChat}>
+        {!isOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        )}
+      </div>
+      {isOpen && (
+        <div className="p-4">
+          <div className="mb-4 text-lg font-semibold">Chatbot</div>
+          <div className="mb-4 h-48 overflow-y-auto">
+            {conversation.map((msg, index) => (
+              <div key={index} className={`mb-2 p-2 rounded ${msg.isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>
+                {msg.text}
+              </div>
+            ))}
           </div>
-
-          <div className="pr-4 h-[474px]" style={{ minWidth: "100%", display: "table" }}>
-            {/* Chat messages and input form */}
-          </div>
-
-          <div className="flex items-center pt-0">
-            <form className="flex items-center justify-center w-full space-x-2">
-              <input
-                className="flex h-10 w-full rounded-md border border-[#e5e7eb] px-3 py-2 text-sm placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#9ca3af] disabled:cursor-not-allowed disabled:opacity-50 text-[#030712] focus-visible:ring-offset-2"
-                placeholder="Type your message"
-                value=""
-              />
-              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium text-[#f9fafb] disabled:pointer-events-none disabled:opacity-50 bg-black hover:bg-[#111827E6] h-10 px-4 py-2">
-                Send
-              </button>
-            </form>
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="flex-1 mr-2 w-2 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button onClick={sendMessage} className="px-4 py-2 text-white bg-blue-500 rounded-md">Send</button>
           </div>
         </div>
       )}
     </div>
- );
+  );
 };
 
 export default ChatBotUI;
