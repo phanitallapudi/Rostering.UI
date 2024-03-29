@@ -10,6 +10,7 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
+import { Toaster, toast } from 'sonner'
 import { Button } from "@mui/material";
 import ChatBotUI from "../components/ChatBotUI";
 const starStyle = {
@@ -159,8 +160,16 @@ const SingleTicket = () => {
     setActiveMarker(marker);
   };
   const handleSubmit = () => {
-    console.log("Selected technician ID:", selectedTechnician);
-    assignManually(selectedTechnician, id);
+    const userConfirmation = window.confirm("Are you sure you want to assign this ticket?");
+
+    if(userConfirmation){
+      toast.success("Selected technician ID:", selectedTechnician);
+      assignManually(selectedTechnician, id);
+    }
+    else {
+      // Optionally, handle the case where the user cancels the action
+      toast.error("Ticket assignment cancelled by the admin.");
+   }
   };
 
   return (

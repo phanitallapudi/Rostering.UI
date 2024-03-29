@@ -2,6 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FaTicketSimple } from "react-icons/fa6";
 import { MdSpaceDashboard } from "react-icons/md";
+import { IoSettings } from "react-icons/io5";
+import { IoLogOut } from "react-icons/io5";
+import { AiFillSchedule } from "react-icons/ai";
+import { IoMdAnalytics } from "react-icons/io";
+import { FaUserCog } from "react-icons/fa";
+
 
 import SidebarLinkGroup from './SidebarLinkGroup';
 
@@ -130,31 +136,31 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               </Link>
               <Link to="/roster" className='hover:bg-gray-700 px-2 w-44 py-3 rounded-md text-white flex items-center justify-start'>
                 <span>
-                  <FaTicketSimple size={25}/>
+                  <FaUserCog size={25}/>
                 </span> 
                 Technician
               </Link>
               <Link to="/dispatch" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
-                  <FaTicketSimple size={25}/>
+                  <AiFillSchedule size={25}/>
                 </span>
                 Scheduler
               </Link>
               <Link to="/analytics" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
-                  <FaTicketSimple size={25}/>
+                  <IoMdAnalytics size={25}/>
                 </span>
                 Analytics
               </Link>
               <Link to="/settings" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
-                  <FaTicketSimple size={25}/>
+                  <IoSettings size={25}/>
                 </span>
                 Settings
               </Link>
               <Link to="/" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
-                  <FaTicketSimple size={25}/>
+                  <IoLogOut size={25}/>
                 </span>
                 Logout
               </Link>
