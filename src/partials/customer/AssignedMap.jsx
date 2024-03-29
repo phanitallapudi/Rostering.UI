@@ -2,9 +2,10 @@ import React from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const AssignedMap = ({ ticketLocation, technicianLocation }) => {
-  // Define the initial map view
-  const position = [ticketLocation.latitude, ticketLocation.longitude];
+const AssignedMap = ({ routePoints }) => {
+  const position = [routePoints[0].latitude, routePoints[0].longitude];
+  const source = routePoints[0];
+  const destination = routePoints[routePoints.length - 1];
 
   return (
     <MapContainer center={position} zoom={15} style={{ height: "100vh", width: "100%" }}>
@@ -12,26 +13,17 @@ const AssignedMap = ({ ticketLocation, technicianLocation }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       />
-      {/* Add a marker for the ticket location */}
-      <Marker position={[ticketLocation.latitude, ticketLocation.longitude]}>
+      <Polyline positions={routePoints.map(point => [point.latitude, point.longitude])} color="blue" />
+      <Marker position={[source.latitude, source.longitude]}>
         <Popup>
-          Ticket Location
+          Source
         </Popup>
       </Marker>
-      {/* Add a marker for the technician location */}
-      <Marker position={[technicianLocation.latitude, technicianLocation.longitude]}>
+      <Marker position={[destination.latitude, destination.longitude]}>
         <Popup>
-          Technician Location
+          Destination
         </Popup>
       </Marker>
-      {/* Draw a polyline between the ticket location and technician location */}
-      <Polyline
-        positions={[
-          [ticketLocation.latitude, ticketLocation.longitude],
-          [technicianLocation.latitude, technicianLocation.longitude]
-        ]}
-        color="blue"
-      />
     </MapContainer>
   );
 };
