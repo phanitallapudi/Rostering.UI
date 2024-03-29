@@ -11,6 +11,7 @@ import {
   useLoadScript,
 } from "@react-google-maps/api";
 import { Button } from "@mui/material";
+import ChatBotUI from "../components/ChatBotUI";
 const starStyle = {
   width: "20px", // Adjust as needed
   height: "20px", // Adjust as needed
@@ -494,6 +495,7 @@ const SingleTicket = () => {
               </div>
             </div>
           </div>
+          <ChatBotUI/>
         </main>
       </div>
     </div>
