@@ -41,6 +41,12 @@ export default function Form() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTechnician, setSelectedTechnician] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+
+  const handleTimeChange = (event) => {
+    setSelectedTime(event.target.value);
+  };
+
 
   const handleTextareaChange = (event) => {
     setTextareaValue(event.target.value);
@@ -65,26 +71,8 @@ export default function Form() {
 
   return (
     <div>
-      <Divider class="text-xl">Technician Schedule</Divider>
-      <TextareaAutosize
-        aria-label="textarea"
-        placeholder="Type your text here"
-        value={textareaValue}
-        onChange={handleTextareaChange}
-        style={{ width: '100%', minHeight: 100, marginTop: 10 }}
-      />
-      <Divider>DatePicker</Divider>
-      <TextField
-        id="date"
-        label="Select Date"
-        type="date"
-        value={selectedDate}
-        onChange={handleDateChange}
-        style={{ width: '100%', marginTop: 10 }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
+      <div class="text-2xl">Technician Schedule</div>
+      {/* <Divider> */}
       <Divider>Technician</Divider>
       <TextField
         select
@@ -100,6 +88,31 @@ export default function Form() {
           </MenuItem>
         ))}
       </TextField>
+      <div className="w-full mt-6">
+      <Divider>Assign a Date</Divider>
+      {/* <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">Select a Date:</label> */}
+      <input
+        id="date"
+        type="date"
+        value={selectedDate}
+        onChange={handleDateChange}
+        className="block w-44 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        style={{ marginTop: '10px', marginBottom: '40px' }}
+      />
+      </div>
+      {/* </Divider> */}
+      <Divider>Time</Divider>
+      <div className="w-full">
+      <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">Select a Time:</label>
+      <input
+        id="time"
+        type="time"
+        value={selectedTime}
+        onChange={handleTimeChange}
+        className="block w-32 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        style={{ marginTop: '10px', marginBottom: '20px' }}
+      />
+      
       <Divider>Location</Divider>
       <TextField
         select
@@ -108,7 +121,7 @@ export default function Form() {
         onChange={handleLocationChange}
         variant="outlined"
         style={{ width: '100%', marginTop: 10 }}
-      >
+        >
         {locations.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
@@ -119,5 +132,7 @@ export default function Form() {
         Submit
       </Button>
     </div>
+        </div>
+    
   );
 }

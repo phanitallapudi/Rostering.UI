@@ -11,7 +11,7 @@ import './charts/ChartjsConfig';
 
 // Import pages
 import Dashboard from './pages/Dashboard';
-
+import { Toaster, toast } from 'sonner'
 import Sidebar from './partials/Sidebar';
 import Tickets from './pages/Tickets';
 import Roster from './pages/Roster';
@@ -21,6 +21,8 @@ import ScheduleAndDispatch from './pages/ScheduleAndDispatch';
 import TicketManagement from './pages/TicketManagement';
 import SingleTicket from './pages/SingleTicket';
 import Login from './pages/Login';
+import Settings from './pages/Settings';
+import AnalyticsGraphsTechnician from './components/AnalyticsGraphsTechnician';
 
 function App() {
 
@@ -34,6 +36,7 @@ function App() {
 
   return (
     <>
+    <Toaster />
       <Routes>
         <Route exact path="/" element={<Login />} />
         <Route exact path="/dashboard" element={<Dashboard />} />
@@ -42,8 +45,9 @@ function App() {
         <Route exact path="/roster" element={<Roster />} />
         <Route exact path="/dispatch" element={<ScheduleAndDispatch />} />
         <Route exact path="/analytics" element={<Analytics />} />
-        <Route exact path="/settings" element={<Roster />} />
+        <Route exact path="/settings" element={<Settings />} />
         <Route exact path="/roster" element={<Roster />} />
+        <Route exact path="/technicianGraph" element={<AnalyticsGraphsTechnician />} />
         <Route exact path="/tickets/:id" element={<SingleTicket/>} />
       </Routes>
     </>

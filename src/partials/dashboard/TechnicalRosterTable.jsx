@@ -95,6 +95,14 @@ const TechnicalRosterTable = () => {
     setCurrentPage(1); // Reset pagination when changing sorting criteria
   };
 
+  const handleReset = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+    setSortBy(null);
+    setSortOrder('asc');
+    setCurrentPage(1);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -119,6 +127,7 @@ const TechnicalRosterTable = () => {
         <div>
           <Button onClick={() => handleSortChange('rating')}>Sort by Rating</Button>
           <Button onClick={() => handleSortChange('experience_years')}>Sort by Experience</Button>
+          <Button onClick={handleReset}>Reset</Button>
         </div>
       </div>
       <div className="relative overflow-x-auto">
@@ -134,7 +143,6 @@ const TechnicalRosterTable = () => {
               <th scope="col" className="px-6 py-3">Location</th>
               <th scope="col" className="px-6 py-3">Schedule</th>
               <th scope="col" className="px-6 py-3">Phone</th>
-              <th scope="col" className="px-6 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -147,16 +155,13 @@ const TechnicalRosterTable = () => {
                 <td className="capitalize px-6 py-4">{technician.skill_set}</td>
                 <td className="capitalize px-6 py-4 text-center">{technician.rating}</td>
                 <td className="capitalize px-6 py-4 text-center">{technician.experience_years}</td>
-                <td className="capitalize px-6 py-4">{technician.current_location.join(', ')}</td>
+                <td className="capitalize px-6 py-4">{technician.address}</td>
                 <td className="capitalize px-6 py-4">
-                <div className={`px-1 py-1 w-16 text-center rounded-xl ${technician.day_schedule.toLowerCase() === 'booked' ? 'bg-gray-400 text-white' : (technician.day_schedule.toLowerCase() === 'free' ? 'bg-green-400 text-white' : '')}`}>
+                  <div className={`px-1 py-1 w-16 text-center rounded-xl ${technician.day_schedule.toLowerCase() === 'booked' ? 'bg-gray-400 text-white' : (technician.day_schedule.toLowerCase() === 'free' ? 'bg-green-400 text-white' : '')}`}>
                     {technician.day_schedule}
                   </div>
                 </td>
                 <td className="px-6 py-4">{technician.phoneno}</td>
-                <td className="px-6 py-4 text-center">
-                  <FaRegEye className="cursor-pointer" size={25} />
-                </td>
               </tr>
             ))}
           </tbody>

@@ -68,7 +68,7 @@ function Dashboard() {
               {/* Card (Reasons for Refunds) */}
              
               {/* Card (Recent Activity) */}
-            
+              
               {/* Card (Income/Expenses) */}
             
             </div>
