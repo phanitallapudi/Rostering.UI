@@ -10,7 +10,9 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
+import { Toaster, toast } from 'sonner'
 import { Button } from "@mui/material";
+import ChatBotUI from "../components/ChatBotUI";
 const starStyle = {
   width: "20px", // Adjust as needed
   height: "20px", // Adjust as needed
@@ -105,6 +107,7 @@ const SingleTicket = () => {
           }
         );
         setTicket(response.data);
+        console.log(response.data);
         console.log(response.data.assigned_to._id);
       } catch (error) {
         // console.error("Error fetching ticket:", error);
@@ -158,8 +161,16 @@ const SingleTicket = () => {
     setActiveMarker(marker);
   };
   const handleSubmit = () => {
-    console.log("Selected technician ID:", selectedTechnician);
-    assignManually(selectedTechnician, id);
+    const userConfirmation = window.confirm("Are you sure you want to assign this ticket?");
+
+    if(userConfirmation){
+      toast.success("Selected technician ID:", selectedTechnician);
+      assignManually(selectedTechnician, id);
+    }
+    else {
+      // Optionally, handle the case where the user cancels the action
+      toast.error("Ticket assignment cancelled by the admin.");
+   }
   };
 
   return (
@@ -302,7 +313,8 @@ const SingleTicket = () => {
                                 )
                               )}
                             </select>
-                            {ticket && ticket.assigned_to && (
+                            {/* {ticket && ticket.assigned_to && ( */} 
+                              {ticket &&  (
                               <button
                                 onClick={handleSubmit}
                                 className=" mt-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -494,6 +506,7 @@ const SingleTicket = () => {
               </div>
             </div>
           </div>
+          <ChatBotUI/>
         </main>
       </div>
     </div>

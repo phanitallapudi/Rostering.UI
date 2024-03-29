@@ -15,6 +15,7 @@ function Analytics() {
 
   useEffect(()=> {
     const fetchTechnicianGraphsData = async () => {
+      setIsLoadingGraphs(true);
       try {
         const data = await fetchTechniciansGraphs();
         console.log(data);
@@ -22,8 +23,10 @@ function Analytics() {
       } catch (error) {
         console.log(error);
       }
+      finally{
+        setIsLoadingGraphs(false);
+      }
     };
-
     fetchTechnicianGraphsData();
   },[])
 
@@ -48,7 +51,7 @@ function Analytics() {
           <div className="px-4 sm:px-6 lg:px-8 py-4 w-full max-w-9xl mx-auto">
             {/* Replace TicketsTable with AnalyticsReport */}
             {/* <AnalyticsReport /> */}
-            <AnalyticsGraphsTechnicainDetails technicianGraph = {technicianGraph} />
+            <AnalyticsGraphsTechnicainDetails loadingGraphs={loadingGraphs} technicianGraph = {technicianGraph} />
           </div>
         </main>
         <Banner />

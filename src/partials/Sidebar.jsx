@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { FaTicketSimple } from "react-icons/fa6";
+import { MdSpaceDashboard } from "react-icons/md";
+import { IoSettings } from "react-icons/io5";
+import { IoLogOut } from "react-icons/io5";
+import { AiFillSchedule } from "react-icons/ai";
+import { IoMdAnalytics } from "react-icons/io";
+import { FaUserCog } from "react-icons/fa";
+
 
 import SidebarLinkGroup from './SidebarLinkGroup';
 
@@ -114,25 +122,46 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </h3> */}
             <ul className="mt-3 ml-6 flex flex-col justify-center items-start">
               {/* Dashboard */}
-              <Link to="/dashboard" className='hover:bg-gray-700 px-10 w-44 py-3 rounded-md text-white'>
+              <Link to="/dashboard" className='hover:bg-gray-700 px-2 w-44 py-3 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <MdSpaceDashboard size={25}/>
+                </span>
                 Dashboard
               </Link>
-              <Link to="/tickets" className='hover:bg-gray-700 w-44 px-10 py-3 rounded-md text-white'>
+              <Link to="/tickets" className='hover:bg-gray-700 w-44 px-2 py-3 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <FaTicketSimple size={25}/>
+                </span>
                 Tickets
               </Link>
-              <Link to="/roster" className='hover:bg-gray-700 px-10 w-44 py-3 rounded-md text-white'>
+              <Link to="/roster" className='hover:bg-gray-700 px-2 w-44 py-3 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <FaUserCog size={25}/>
+                </span> 
                 Technician
               </Link>
-              <Link to="/dispatch" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
+              <Link to="/dispatch" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <AiFillSchedule size={25}/>
+                </span>
                 Scheduler
               </Link>
-              <Link to="/analytics" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
+              <Link to="/analytics" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <IoMdAnalytics size={25}/>
+                </span>
                 Analytics
               </Link>
-              <Link to="/settings" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
+              <Link to="/settings" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <IoSettings size={25}/>
+                </span>
                 Settings
               </Link>
-              <Link to="/" className='hover:bg-gray-700 px-10 py-3 w-44 rounded-md text-white'>
+              <Link to="/" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
+                <span>
+                  <IoLogOut size={25}/>
+                </span>
                 Logout
               </Link>
             </ul>
