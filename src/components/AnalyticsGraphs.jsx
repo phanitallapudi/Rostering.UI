@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
 
-const AnalyticsGraphs = ({ graphs , loadingticketGraphs }) => {
+const AnalyticsGraphs = ({ graphs, loadingticketGraphs }) => {
   return (
     <div>
       <div className="flex items-center justify-start py-4 md:py-2 flex-wrap">
@@ -22,7 +22,14 @@ const AnalyticsGraphs = ({ graphs , loadingticketGraphs }) => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {loadingticketGraphs && <Loader/>}
+        {loadingticketGraphs && (
+          <div className="flex flex-col items-center justify-center h-48">
+            <Loader />
+            <div className="text-center text-gray-600 mt-2">
+              Crunching the latest data, Just for you, Hang tight...
+            </div>
+          </div>
+        )}
         {graphs.map((graph, index) => {
           const base64String = Object.values(graph)[0];
           const imageSrc = `data:image/png;base64,${base64String}`;
