@@ -185,8 +185,8 @@ const SingleTicket = () => {
             {/* Welcome banner */}
             {/* <WelcomeBanner /> */}
             {/* Ticket Details */}
-            <div className="border border-gray-200 rounded overflow-hidden mb-2">
-              <div class="bg-white w-[650px] shadow overflow-hidden sm:rounded-lg">
+            <div className="border sm:min-w-[400px] min-w-[400px]  border-gray-200 rounded overflow-hidden mb-2">
+              <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                 <div class="px-4 py-5 sm:px-6">
                   <h3 class="text-lg leading-6 font-medium text-gray-900">
                     Ticket View
