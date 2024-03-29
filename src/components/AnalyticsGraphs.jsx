@@ -21,18 +21,18 @@ const AnalyticsGraphs = ({ graphs , loadingticketGraphs }) => {
           Technician Graphs
         </Link>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-        {loadingticketGraphs && <Loader/>}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {loadingticketGraphs && <Loader/>}
         {graphs.map((graph, index) => {
-          // Assuming each object has a single key-value pair where the key is the name of the graph and the value is the Base64 string
           const base64String = Object.values(graph)[0];
           const imageSrc = `data:image/png;base64,${base64String}`;
           return (
-            <div key={index}>
+            <div key={index} className="flex justify-center">
               <img
-                className="h-auto max-w-full rounded-lg"
+                className="h-auto rounded-lg object-fill"
                 src={imageSrc}
                 alt={`Graph ${index}`}
+                style={{ padding: "10px" }} // Example padding, adjust as needed
               />
             </div>
           );
