@@ -19,7 +19,12 @@ import DashboardCard12 from '../partials/dashboard/DashboardCard12';
 import DashboardCard13 from '../partials/dashboard/DashboardCard13';
 import Banner from '../partials/Banner';
 
+
 function Dashboard() {
+  //useAuth();
+
+  
+
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

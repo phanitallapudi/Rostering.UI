@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { FaTicketSimple } from "react-icons/fa6";
 import { MdSpaceDashboard } from "react-icons/md";
 import { IoSettings } from "react-icons/io5";
@@ -15,11 +15,18 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const { pathname } = location;
 
+  const navigate = useNavigate();
+
   const trigger = useRef(null);
   const sidebar = useRef(null);
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true');
+
+  const logoutHandler = () => {
+    localStorage.removeItem('access_token');
+    navigate('/');
+  }
 
   // close on click outside
   useEffect(() => {
@@ -158,12 +165,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 </span>
                 Settings
               </Link>
-              <Link to="/" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
+              <button onClick={logoutHandler} className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <IoLogOut size={25}/>
                 </span>
                 Logout
-              </Link>
+              </button>
             </ul>
           </div>
         </div>

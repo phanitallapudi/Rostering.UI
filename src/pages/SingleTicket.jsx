@@ -337,7 +337,7 @@ const SingleTicket = () => {
                             Rating
                           </dt>
                           <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
-                            {ticket.assigned_to.rating}
+                            {ticket.assigned_to.rating + '/5'}
                           </dd>
                         </div>
                         <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
