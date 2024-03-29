@@ -26,13 +26,21 @@ function BarChart03({
   const { tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = chartColors;   
 
   useEffect(() => {
+    if (!chart) return;
 
+    // Update the chart data and options
+    chart.data = data;
+    chart.options.scales.x.max = calculateMaxValue(data);
+    chart.update();
+  }, [data]); // Listen for changes in the data prop
+
+  useEffect(() => {
+    if (!canvas.current) return;
+
+    const ctx = canvas.current.getContext('2d');
     // Calculate sum of values
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    const values = data.datasets.map(x => x.data.reduce(reducer));
-    const max = values.reduce(reducer);
+    const max = calculateMaxValue(data);
 
-    const ctx = canvas.current;
     // eslint-disable-next-line no-unused-vars
     const newChart = new Chart(ctx, {
       type: 'bar',
@@ -149,6 +157,13 @@ function BarChart03({
     }
     chart.update('none');
   }, [currentTheme]);  
+
+  const calculateMaxValue = (data) => {
+    // Calculate sum of values
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    const values = data.datasets.map(x => x.data.reduce(reducer));
+    return values.reduce(reducer);
+  };
 
   return (
     <div className="grow flex flex-col justify-center">
