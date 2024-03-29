@@ -107,6 +107,7 @@ const SingleTicket = () => {
           }
         );
         setTicket(response.data);
+        console.log(response.data);
         console.log(response.data.assigned_to._id);
       } catch (error) {
         // console.error("Error fetching ticket:", error);
@@ -312,7 +313,8 @@ const SingleTicket = () => {
                                 )
                               )}
                             </select>
-                            {ticket && ticket.assigned_to && (
+                            {/* {ticket && ticket.assigned_to && ( */} 
+                              {ticket &&  (
                               <button
                                 onClick={handleSubmit}
                                 className=" mt-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
