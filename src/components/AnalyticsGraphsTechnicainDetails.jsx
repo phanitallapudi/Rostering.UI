@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Loader from "./Loader";
 
-const AnalyticsGraphsTechnicainDetails = ({ technicianGraph }) => {
+const AnalyticsGraphsTechnicainDetails = ({ technicianGraph, loadingGraphs }) => {
   console.log(technicianGraph);
   return (
     <div>
+      {/* {loadingGraphs && <Loader/>} */}
       <div className="flex items-center justify-start py-4 md:py-2 flex-wrap">
         <Link
           type="button"
@@ -22,6 +24,7 @@ const AnalyticsGraphsTechnicainDetails = ({ technicianGraph }) => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {loadingGraphs && <Loader/>}
         {technicianGraph.map((graph, index) => {
           const base64String = Object.values(graph)[0];
           const imageSrc = `data:image/png;base64,${base64String}`;

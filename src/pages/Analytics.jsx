@@ -11,15 +11,20 @@ import { fetchTicketGraphs } from "../service/allTechnicians";
 function Analytics() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [tikcetsGraph, setTicketGraph] = useState([]);
+  const [loadingticketGraphs, setIsLoadingticketGraphs] = useState(false);
 
   useEffect(()=> {
     const fetchTicektsGraphsData = async () => {
+      setIsLoadingticketGraphs(true);
       try {
         const data = await fetchTicketGraphs();
         console.log(data);
         setTicketGraph(data);
       } catch (error) {
         console.log(error);
+      }
+      finally{
+        setIsLoadingticketGraphs(false);
       }
     };
 
@@ -46,7 +51,7 @@ function Analytics() {
           <div className="px-4 sm:px-6 lg:px-8 py-4 w-full max-w-9xl mx-auto">
             {/* Replace TicketsTable with AnalyticsReport */}
             {/* <AnalyticsReport /> */}
-            <AnalyticsGraphs graphs = {tikcetsGraph} />
+            <AnalyticsGraphs loadingticketGraphs={loadingticketGraphs} graphs = {tikcetsGraph} />
           </div>
         </main>
         <Banner />

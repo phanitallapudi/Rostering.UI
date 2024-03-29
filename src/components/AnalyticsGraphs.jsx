@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Loader from "./Loader";
 
-const AnalyticsGraphs = ({ graphs }) => {
+const AnalyticsGraphs = ({ graphs , loadingticketGraphs }) => {
   return (
     <div>
       <div className="flex items-center justify-start py-4 md:py-2 flex-wrap">
@@ -21,6 +22,7 @@ const AnalyticsGraphs = ({ graphs }) => {
         </Link>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
+        {loadingticketGraphs && <Loader/>}
         {graphs.map((graph, index) => {
           // Assuming each object has a single key-value pair where the key is the name of the graph and the value is the Base64 string
           const base64String = Object.values(graph)[0];
