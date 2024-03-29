@@ -59,8 +59,12 @@ const Settings = () => {
       toast.success(response.data.message);
       setFileName(""); // Clear file name after upload
     } catch (error) {
-      console.error('Error uploading file:', error);
-    }
+      if (error.response && error.response.data && error.response.data.detail) {
+          toast.error('Error uploading file: ' + error.response.data.detail);
+      } else {
+          toast.error('Error uploading file:', error);
+      }
+  }
     setIsLoading(false);
   };
 
