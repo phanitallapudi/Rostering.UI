@@ -32,6 +32,17 @@ const AnalyticsGraphs = ({ graphs, loadingticketGraphs }) => {
     document.body.removeChild(link);
   };
 
+  const getRandomText = () => {
+    const texts = [
+      "Crunching the latest data, Just for you, Hang tight...",
+      "Hatching some fresh data, Just for you, Bunny up...",
+      "Diving into the latest egg-citing data, Just for you, Hop on...",
+      "Analyzing the newest insights, Just for you, Keep an eye out for blossoming trends..."
+    ];
+    const randomIndex = Math.floor(Math.random() * texts.length);
+    return texts[randomIndex];
+  };
+
   return (
     <div>
       <div className="flex items-center justify-start py-4 md:py-2 flex-wrap">
@@ -55,7 +66,7 @@ const AnalyticsGraphs = ({ graphs, loadingticketGraphs }) => {
           <div className="flex flex-col items-center justify-center h-48">
             <Loader />
             <div className="text-center text-gray-600 mt-2">
-              Crunching the latest data, Just for you, Hang tight...
+              {getRandomText()}
             </div>
           </div>
         )}
