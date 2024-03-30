@@ -9,6 +9,7 @@ export const fetchTicket = async (id) => {
   }
 };
 
+
 export const fetchTicketInformationWithAuthorization = async () => {
   const accessToken = localStorage.getItem('access_token');
 

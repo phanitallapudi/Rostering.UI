@@ -158,3 +158,31 @@ export const fetchTechniciansGraphs = async () => {
     throw new Error('Error fetching ticket:', error);
   }
 };
+
+
+
+
+
+
+export const fetchTicketInformation = async () => {
+  try {
+    // Assuming you have the access token stored in localStorage
+    const accessToken = localStorage.getItem('access_token');
+
+    const response = await axios.get('http://127.0.0.1:8000/llm/ticket_query', {
+      params: {
+        query: "status",
+        ticket_id: "6604221d025a56d353295dec",
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error fetching ticket information:', error);
+  }
+};
+
+

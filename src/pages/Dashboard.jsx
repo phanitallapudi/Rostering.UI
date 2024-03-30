@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Sidebar from '../partials/Sidebar';
 import Header from '../partials/Header';
@@ -18,12 +18,21 @@ import DashboardCard11 from '../partials/dashboard/DashboardCard11';
 import DashboardCard12 from '../partials/dashboard/DashboardCard12';
 import DashboardCard13 from '../partials/dashboard/DashboardCard13';
 import Banner from '../partials/Banner';
+import { Navigate, useNavigate } from 'react-router';
+// import { fetchTicketInformation } from '../service/allTechnicians';
 
 
 function Dashboard() {
   //useAuth();
+  // fetchTicketInformation(); 
+  const navigate = useNavigate();
+  const authcheck = localStorage.getItem('access_token');
 
-  
+  useEffect(()=>{
+    if(!authcheck){
+      navigate('/');
+    }
+  },[authcheck])
 
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
