@@ -1,8 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
 
 const AnalyticsGraphs = ({ graphs, loadingticketGraphs }) => {
+  const [modalImage, setModalImage] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  const openModal = (imageSrc) => {
+    setModalImage(imageSrc);
+  };
+
+  const closeModal = () => {
+    setModalImage(null);
+    setZoomLevel(1);
+  };
+
+  const zoomIn = () => {
+    setZoomLevel((prevZoom) => prevZoom + 0.1);
+  };
+
+  const zoomOut = () => {
+    setZoomLevel((prevZoom) => Math.max(0.1, prevZoom - 0.1));
+  };
+
+  const downloadImage = () => {
+    const link = document.createElement("a");
+    link.href = modalImage;
+    link.download = "graph_image.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <div className="flex items-center justify-start py-4 md:py-2 flex-wrap">
@@ -36,15 +65,54 @@ const AnalyticsGraphs = ({ graphs, loadingticketGraphs }) => {
           return (
             <div key={index} className="flex justify-center">
               <img
-                className="h-auto rounded-lg object-fill"
+                className="h-auto rounded-lg object-fill cursor-pointer"
                 src={imageSrc}
                 alt={`Graph ${index}`}
                 style={{ padding: "10px" }} // Example padding, adjust as needed
+                onClick={() => openModal(imageSrc)}
               />
             </div>
           );
         })}
       </div>
+      {modalImage && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="max-w-lg mx-auto relative">
+            <img
+              src={modalImage}
+              alt="Modal"
+              className="max-w-full max-h-full"
+              style={{ transform: `scale(${zoomLevel})` }}
+            />
+            <div className="absolute top-0 right-0 m-4 flex space-x-2">
+              <button
+                onClick={zoomIn}
+                className="text-white bg-gray-800 rounded-full p-2"
+              >
+                +
+              </button>
+              <button
+                onClick={zoomOut}
+                className="text-white bg-gray-800 rounded-full p-2"
+              >
+                -
+              </button>
+              <button
+                onClick={downloadImage}
+                className="text-white bg-gray-800 rounded-full p-2"
+              >
+                Download
+              </button>
+              <button
+                onClick={closeModal}
+                className="text-white bg-gray-800 rounded-full p-2"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
