@@ -2,10 +2,12 @@ import React from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const AssignedMap = ({ routePoints }) => {
+const AssignedMap = ({ routePoints, ticket }) => {
   const position = [routePoints[0].latitude, routePoints[0].longitude];
   const source = routePoints[0];
   const destination = routePoints[routePoints.length - 1];
+
+  console.log(ticket);
 
   return (
     <MapContainer center={position} zoom={15} style={{ height: "100vh", width: "100%" }}>
@@ -16,7 +18,11 @@ const AssignedMap = ({ routePoints }) => {
       <Polyline positions={routePoints.map(point => [point.latitude, point.longitude])} color="blue" />
       <Marker position={[source.latitude, source.longitude]}>
         <Popup>
-          Source
+          {ticket.assigned_to.name}
+          <br></br>
+          {ticket.assigned_to.address}
+          <br></br>
+          {ticket.assigned_to.phoneno}
         </Popup>
       </Marker>
       <Marker position={[destination.latitude, destination.longitude]}>

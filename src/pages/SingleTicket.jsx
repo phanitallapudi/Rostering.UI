@@ -503,7 +503,7 @@ const SingleTicket = () => {
                   </h2>
                 </header>
                 <div>
-                  {arrayPoints ? <AssignedMap routePoints={arrayPoints} /> : ''}
+                  {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
                 </div>
               </div>
             </div>

@@ -10,7 +10,7 @@ const fetchRoutePoints = async (userLocation, techLocation) => {
         const encodedTechLocation = encodeURIComponent(techLocation);
 
         // Construct the URL with encoded userLocation and techLocation
-        const url = `http://127.0.0.1:8000/technicians/calculate-route?origin=${userLocation}&destination=${techLocation}`;
+        const url = `http://127.0.0.1:8000/technicians/calculate_route?origin=${userLocation}&destination=${techLocation}`;
 
         // Fetch route points from the URL with headers
         const response = await fetch(url, {
