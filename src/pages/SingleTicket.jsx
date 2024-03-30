@@ -12,6 +12,8 @@ import {
 } from "@react-google-maps/api";
 import { Toaster, toast } from "sonner";
 import { Button } from "@mui/material";
+import fetchRoutePoints from "../service/routeService";
+import AssignedMap from "../partials/customer/AssignedMap";
 import ChatBotUI from "../components/ChatBotUI";
 const starStyle = {
   width: "20px", // Adjust as needed
@@ -87,6 +89,9 @@ const SingleTicket = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedTechnician, setSelectedTechnician] = useState(null);
+  const [user_location, setUserLocation] = useState('');
+  const [tech_location, setTechnicianLocation] = useState('');
+  const [arrayPoints, setArrayPoints] = useState(null);
   //const accesstoken = localStorage.getItem('access_token');
 
   const accesstoken = localStorage.getItem("access_token");
@@ -107,8 +112,17 @@ const SingleTicket = () => {
           }
         );
         setTicket(response.data);
-        console.log(response.data);
-        console.log(response.data.assigned_to._id);
+        console.log("this is ticket data ", response.data);
+        console.log(" assigned technician id", response.data.assigned_to._id);
+        // console.log("user's location", response.data.location);
+        const userLat = response.data.location[0];
+        const userLong = response.data.location[1];
+
+        const userLocation = `${userLat}, ${userLong}`;
+        // console.log(userLat);
+        // console.log(userLong);
+        setUserLocation(userLocation);
+        console.log("this is user location", `${user_location}`);
       } catch (error) {
         // console.error("Error fetching ticket:", error);
       }
@@ -120,6 +134,7 @@ const SingleTicket = () => {
     }
   }, [id]);
 
+
   useEffect(() => {
     const fetchNearestTechnician = async () => {
       try {
@@ -129,9 +144,16 @@ const SingleTicket = () => {
           ticket.location[1],
           ticket.title
         );
-        console.log(ticket.skill_set);
+        // console.log(ticket.skill_set);
         setTechnicians(nearestTechnician);
-        console.log(nearestTechnician);
+        console.log("this is the technician array ", nearestTechnician);
+        const latitude = nearestTechnician[0].current_location[0];
+
+        const longitude = nearestTechnician[0].current_location[1];
+        const locationString = `${latitude}, ${longitude}`;
+        setTechnicianLocation(locationString);
+        console.log("this is tech location", `${tech_location}`);
+
       } catch (error) {
         console.error("Error fetching nearest technician:", error);
       }
@@ -141,6 +163,23 @@ const SingleTicket = () => {
       fetchNearestTechnician();
     }
   }, [ticket]);
+
+  useEffect(() => {
+    const fetchArray = async () => {
+      try {
+        const response = await fetchRoutePoints(user_location, tech_location);
+        setArrayPoints(response);
+        console.log("Response in singleTicket:", response);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (user_location && tech_location) {
+      fetchArray();
+    }
+  }, [user_location, tech_location]);
+
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -246,9 +285,9 @@ const SingleTicket = () => {
                           <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Assign Manually
                           </dt>
-                          <div className="relative mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-1">
+                          <div className="relative mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2 flex items-center">
                             <select
-                              className="block w-full border border-gray-300 dark:border-gray-500 rounded px-3 py-1 dark:bg-gray-600 dark:text-gray-100"
+                              className="block w-2/3 border border-gray-300 rounded px-3 py-1 mr-2"
                               value={selectedTechnician}
                               onChange={(e) => {
                                 setSelectedTechnician(e.target.value);
@@ -259,41 +298,31 @@ const SingleTicket = () => {
                               }}
                             >
                               <option value="">Select</option>
-                              {technicians.map(
-                                ({
-                                  _id,
-                                  name,
-                                  day_schedule, // Add day_schedule to technician object destructuring
-                                }) => (
-                                  <option
-                                    key={_id}
-                                    value={_id}
-                                    disabled={day_schedule === "booked"} // Disable option if day_schedule is "booked"
-                                    style={{
-                                      backgroundColor:
-                                        day_schedule === "free"
-                                          ? "lightgreen"
-                                          : "lightgrey", // Set background color
-                                      color:
-                                        day_schedule === "booked"
-                                          ? "gray"
-                                          : "black", // Set text color
-                                    }}
-                                  >
-                                    {name}
-                                  </option>
-                                )
-                              )}
+                              {technicians.map(({ _id, name, day_schedule }) => (
+                                <option
+                                  key={_id}
+                                  value={_id}
+                                  disabled={day_schedule === "booked"}
+                                  style={{
+                                    backgroundColor: day_schedule === "free" ? "lightgreen" : "lightgrey",
+                                    color: day_schedule === "booked" ? "gray" : "black",
+                                  }}
+                                >
+                                  {name}
+                                </option>
+                              ))}
                             </select>
                             {ticket && (
                               <button
                                 onClick={handleSubmit}
-                                className="mt-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-blue-700 dark:hover:text-white"
+                                className="h-3/4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-4 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
                               >
                                 Submit
                               </button>
                             )}
                           </div>
+
+
                         </div>
                       </>
                     )}
@@ -471,6 +500,16 @@ const SingleTicket = () => {
                     )}
                   </GoogleMap>
                 )}
+              </div>
+              <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
+                <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                  <h2 className="font-semibold text-slate-800 dark:text-slate-100">
+                    Directions To The User
+                  </h2>
+                </header>
+                <div>
+                  {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
+                </div>
               </div>
             </div>
           </div>
