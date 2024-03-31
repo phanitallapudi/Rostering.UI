@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
-import { nearestTech, assignManually } from "../service/allTechnicians";
+import { nearestTech, assignManually, assignAutomatically } from "../service/allTechnicians";
 import {
   GoogleMap,
   InfoWindowF,
@@ -102,6 +102,17 @@ const SingleTicket = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_MAP_API_KEY,
   });
+
+  const handleAutoAssign = async () => {
+    try {
+      const assignAutomaticallyCall = await assignAutomatically(ticket._id);
+      console.log(ticket._id);
+      console.log(assignAutomaticallyCall);
+      toast.success(assignAutomaticallyCall);
+    } catch (error) {
+      toast.error(error);
+    }
+  }
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -352,9 +363,15 @@ const SingleTicket = () => {
                                 Submit
                               </button>
                             )}
+                            {ticket && ticket.status == 'open' && (
+                              <button
+                                onClick={handleAutoAssign}
+                                className="h-3/4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-5 ml-2 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
+                              >
+                                Auto Assign
+                              </button>
+                            )}
                           </div>
-
-
                         </div>
                       </>
                     )}
@@ -421,7 +438,7 @@ const SingleTicket = () => {
                     ) : (
                       // Render null values if either ticket or assigned_to is null
                       <>
-                        <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Name
                           </dt>

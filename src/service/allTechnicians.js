@@ -172,3 +172,33 @@ export const fetchTicketInformation = async () => {
 };
 
 
+
+
+export async function assignAutomatically(ticketId) {
+  const accesstoken = localStorage.getItem('access_token');
+  console.log("This function is getting called from allTechnician.js file");
+  console.log("Ticket ID:", ticketId);
+  const headers = {
+    Authorization: `Bearer ${accesstoken}`,
+  };
+  try {
+    // Make the API call to assign technician to ticket using PUT method
+    const response = await axios.put(
+      `http://localhost:8000/tickets/auto_assign_ticket?ticket_id=${ticketId}`,
+      null, // No data payload for a PUT request
+      { headers: headers } // Pass headers here
+    );
+
+    // Check if the response status is 200 (or any other success status code)
+    if (response.status === 200) {
+      // Reload the page
+      console.log(response.data.message);
+      return response.data.message;
+    } else {
+      // Handle other status codes if needed
+      console.log("Failed to assign technician to ticket:", response.data.message);
+    }
+  } catch (error) {
+    console.error("Error assigning technician to ticket:", error);
+  }
+}

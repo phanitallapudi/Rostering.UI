@@ -73,13 +73,14 @@ const Settings = () => {
        <Toaster closeButton />
        {/* Sidebar */}
        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-   
        {/* Content area */}
        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden dark:bg-gray-800">
          {/* Site header */}
-         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-   
+         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> 
          <main>
+          <div className='w-11/12 md:w-3/4 lg:w-1/2 xl:w-3/5 mx-auto py-5 px-2 mt-10 mb-10 text-2xl rounded-md'>
+            Add Technicians Details By Uploading CSV File
+          </div>
            <div className="modal w-11/12 md:w-3/4 lg:w-1/2 xl:w-3/5 mx-auto mt-10 mb-10 bg-white dark:bg-gray-700 rounded-md shadow-md">
              <div className="modal-body px-6 py-4">
                <h2 className="modal-title text-xl font-semibold mt-2 dark:text-white">Upload a file</h2>
@@ -107,7 +108,6 @@ const Settings = () => {
        </div>
     </div>
    );
-   
 };
 
 export default Settings;
