@@ -26,13 +26,21 @@ function BarChart03({
   const { tooltipBodyColor, tooltipBgColor, tooltipBorderColor } = chartColors;   
 
   useEffect(() => {
+    if (!chart) return;
 
+    // Update the chart data and options
+    chart.data = data;
+    chart.options.scales.x.max = calculateMaxValue(data);
+    chart.update();
+  }, [data]); // Listen for changes in the data prop
+
+  useEffect(() => {
+    if (!canvas.current) return;
+
+    const ctx = canvas.current.getContext('2d');
     // Calculate sum of values
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    const values = data.datasets.map(x => x.data.reduce(reducer));
-    const max = values.reduce(reducer);
+    const max = calculateMaxValue(data);
 
-    const ctx = canvas.current;
     // eslint-disable-next-line no-unused-vars
     const newChart = new Chart(ctx, {
       type: 'bar',
@@ -94,7 +102,7 @@ function BarChart03({
             }
             // Reuse the built-in legendItems generator
             const items = c.options.plugins.legend.labels.generateLabels(c);
-            items.forEach((item) => {
+            items.forEach((item, index) => {
               const li = document.createElement('li');
               li.style.display = 'flex';
               li.style.justifyContent = 'space-between';
@@ -115,8 +123,27 @@ function BarChart03({
               value.style.fontWeight = tailwindConfig().theme.fontWeight.medium;
               value.style.marginLeft = tailwindConfig().theme.margin[3];
               value.style.color = item.text === 'Other' ? tailwindConfig().theme.colors.slate[400] : item.fillStyle;
-              const theValue = c.data.datasets[item.datasetIndex].data.reduce((a, b) => a + b, 0);
-              const valueText = document.createTextNode(`${parseInt((theValue / max) * 100)}%`);
+              let valueText;
+              if (index === 0) {
+                valueText = document.createTextNode("🌟");
+                value.style.fontSize = "1.5rem";
+              } else if (index === 1) {
+                valueText = document.createTextNode("🥈");
+                value.style.fontSize = "1.5rem";
+              } else if (index === 2) {
+                valueText = document.createTextNode("🥉");
+                value.style.fontSize = "1.5em";
+              } else if (index === 3) {
+                valueText = document.createTextNode("🏅");
+                value.style.fontSize = "1.5em";
+              } else if (index === 4) {
+                valueText = document.createTextNode("🎖️");
+                value.style.fontSize = "1.5em";
+              } else {
+                const theValue = c.data.datasets[item.datasetIndex].data.reduce((a, b) => a + b, 0);
+                valueText = document.createTextNode(`${theValue}`);
+                value.style.fontSize = "1.5em";
+              }
               const labelText = document.createTextNode(item.text);
               value.appendChild(valueText);
               label.appendChild(labelText);
@@ -149,6 +176,13 @@ function BarChart03({
     }
     chart.update('none');
   }, [currentTheme]);  
+
+  const calculateMaxValue = (data) => {
+    // Calculate sum of values
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    const values = data.datasets.map(x => x.data.reduce(reducer));
+    return values.reduce(reducer);
+  };
 
   return (
     <div className="grow flex flex-col justify-center">

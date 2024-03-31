@@ -1,56 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import BarChart from '../../charts/BarChart03';
+import axios from 'axios';
 
 // Import utilities
 import { tailwindConfig } from '../../utils/Utils';
 
 function DashboardCard11() {
+  const [selectedOption, setSelectedOption] = useState('cable repair');
+  const [topTechnicians, setTopTechnicians] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const chartData = {
-    labels: ['Reasons'],
-    datasets: [
-      {
-        label: 'Kunal Reddy',
-        data: [131],
-        backgroundColor: tailwindConfig().theme.colors.indigo[500],
-        hoverBackgroundColor: tailwindConfig().theme.colors.indigo[600],
-        barPercentage: 1,
-        categoryPercentage: 1,
-      },
-      {
-        label: 'Harsh Togi',
-        data: [100],
-        backgroundColor: tailwindConfig().theme.colors.indigo[800],
-        hoverBackgroundColor: tailwindConfig().theme.colors.indigo[900],
-        barPercentage: 1,
-        categoryPercentage: 1,
-      },
-      {
-        label: 'Radhika Merchant',
-        data: [81],
-        backgroundColor: tailwindConfig().theme.colors.sky[400],
-        hoverBackgroundColor: tailwindConfig().theme.colors.sky[500],
-        barPercentage: 1,
-        categoryPercentage: 1,
-      },
-      {
-        label: 'Bhavna Rey',
-        data: [65],
-        backgroundColor: tailwindConfig().theme.colors.green[400],
-        hoverBackgroundColor: tailwindConfig().theme.colors.green[500],
-        barPercentage: 1,
-        categoryPercentage: 1,
-      },
-      {
-        label: 'Manish Rajput',
-        data: [72],
-        backgroundColor: tailwindConfig().theme.colors.slate[200],
-        hoverBackgroundColor: tailwindConfig().theme.colors.slate[300],
-        barPercentage: 1,
-        categoryPercentage: 1,
-      },
-    ],
+  useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/technicians/top_technicians', {
+          headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          },
+          params: {
+            category: selectedOption // Pass the selected option as a query parameter
+          }
+        });
+        setTopTechnicians(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedOption]); // Fetch data whenever selectedOption changes
+
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  const technicians = topTechnicians[selectedOption] || [];
+
+  let chartData = {};
+
+  if (technicians.length > 0) {
+    chartData = {
+      labels: ['Technicians'],
+      datasets: technicians.slice(0, 5).map((technician, index) => ({
+        label: technician,
+        data: [index + 1],
+        backgroundColor: tailwindConfig().theme.colors.indigo[500 - (index * 100)],
+        hoverBackgroundColor: tailwindConfig().theme.colors.indigo[600 - (index * 100)],
+        barPercentage: 1,
+        categoryPercentage: 1,
+      })),
+    };
+  } else {
+    chartData = {
+      labels: ['Technicians'],
+      datasets: [{ label: 'No data available', data: [0], backgroundColor: 'grey' }],
+    };
+  }
+
+  if (chartData.datasets.length === 0) {
+    return <p>No data available</p>;
+  }
 
   return (
     <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
@@ -58,14 +75,18 @@ function DashboardCard11() {
         <h2 className="font-semibold text-slate-800 dark:text-slate-100">Technicians Rankings</h2>
       </header>
       <div className="px-5 py-3">
-        <div className="flex items-start">
-          <div className="text-3xl font-bold text-slate-800 dark:text-slate-100 mr-2"></div>
-          {/* <div className="text-sm font-semibold text-white px-1.5 bg-yellow-500 rounded-full">-22%</div> */}
-        </div>
+        <select
+          value={selectedOption}
+          onChange={handleChange}
+          className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700"
+        >
+          <option value="">Select an option</option>
+          {Object.keys(topTechnicians).map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
       </div>
-      {/* Chart built with Chart.js 3 */}
       <div className="grow">
-        {/* Change the height attribute to adjust the chart height */}
         <BarChart data={chartData} width={595} height={48} />
       </div>
     </div>

@@ -3,16 +3,21 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
-import { nearestTech, assignManually } from "../service/allTechnicians";
+import { nearestTech, assignManually, assignAutomatically } from "../service/allTechnicians";
 import {
   GoogleMap,
   InfoWindowF,
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-import { Toaster, toast } from 'sonner'
+import { Toaster, toast } from "sonner";
+import Swal from 'sweetalert2';
 import { Button } from "@mui/material";
+import fetchRoutePoints from "../service/routeService";
+import AssignedMap from "../partials/customer/AssignedMap";
 import ChatBotUI from "../components/ChatBotUI";
+
+
 const starStyle = {
   width: "20px", // Adjust as needed
   height: "20px", // Adjust as needed
@@ -87,6 +92,11 @@ const SingleTicket = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedTechnician, setSelectedTechnician] = useState(null);
+  const [user_location, setUserLocation] = useState('');
+  const [tech_location, setTechnicianLocation] = useState('');
+  const [arrayPoints, setArrayPoints] = useState(null);
+  const [autoAssignTriggered, setAutoAssignTriggered] = useState(false);
+  const [fetchrouteTrigger, setFetchRouteTrigger] = useState(false);
   //const accesstoken = localStorage.getItem('access_token');
 
   const accesstoken = localStorage.getItem("access_token");
@@ -94,6 +104,50 @@ const SingleTicket = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_MAP_API_KEY,
   });
+
+  const handleAutoAssign = async () => {
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to automatically assign this ticket.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, assign it!'
+      });
+  
+      if (result.isConfirmed) {
+        const loader = Swal.fire({
+          title: 'Processing...',
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          }
+        });
+  
+        const assignAutomaticallyCall = await assignAutomatically(ticket._id);
+        loader.close();
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Done',
+          showConfirmButton: false,
+          timer: 2000 // Automatically close after 2 seconds
+        });
+  
+        toast.success(assignAutomaticallyCall);
+        setAutoAssignTriggered(true);
+  
+      } else {
+        toast.error("Ticket auto-assignment cancelled by the admin.");
+      }
+    } catch (error) {
+      console.error('Error assigning ticket:', error);
+      toast.error("An error occurred while automatically assigning the ticket.");
+    }
+  };
+  
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -107,8 +161,17 @@ const SingleTicket = () => {
           }
         );
         setTicket(response.data);
-        console.log(response.data);
-        console.log(response.data.assigned_to._id);
+        console.log("this is ticket data ", response.data);
+        console.log(" assigned technician id", response.data.assigned_to._id);
+        // console.log("user's location", response.data.location);
+        const userLat = response.data.location[0];
+        const userLong = response.data.location[1];
+
+        const userLocation = `${userLat}, ${userLong}`;
+        // console.log(userLat);
+        // console.log(userLong);
+        setUserLocation(userLocation);
+        console.log("this is user location", `${user_location}`);
       } catch (error) {
         // console.error("Error fetching ticket:", error);
       }
@@ -118,7 +181,8 @@ const SingleTicket = () => {
     if (id !== null && id !== undefined && id !== "") {
       fetchTicket();
     }
-  }, [id]);
+  }, [id, autoAssignTriggered, fetchrouteTrigger]);
+
 
   useEffect(() => {
     const fetchNearestTechnician = async () => {
@@ -129,9 +193,16 @@ const SingleTicket = () => {
           ticket.location[1],
           ticket.title
         );
-        console.log(ticket.skill_set);
+        // console.log(ticket.skill_set);
         setTechnicians(nearestTechnician);
-        console.log(nearestTechnician);
+        console.log("this is the technician array ", nearestTechnician);
+        const latitude = nearestTechnician[0].current_location[0];
+
+        const longitude = nearestTechnician[0].current_location[1];
+        const locationString = `${latitude}, ${longitude}`;
+        setTechnicianLocation(locationString);
+        console.log("this is tech location", `${tech_location}`);
+
       } catch (error) {
         console.error("Error fetching nearest technician:", error);
       }
@@ -141,6 +212,24 @@ const SingleTicket = () => {
       fetchNearestTechnician();
     }
   }, [ticket]);
+
+  useEffect(() => {
+    const fetchArray = async () => {
+      try {
+        const response = await fetchRoutePoints(user_location, tech_location);
+        setArrayPoints(response);
+        setFetchRouteTrigger(true);
+        console.log("Response in singleTicket:", response);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (user_location && tech_location) {
+      fetchArray();
+    }
+  }, [user_location, tech_location]);
+
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -161,17 +250,47 @@ const SingleTicket = () => {
     setActiveMarker(marker);
   };
   const handleSubmit = () => {
-    const userConfirmation = window.confirm("Are you sure you want to assign this ticket?");
-
-    if(userConfirmation){
-      toast.success("Selected technician ID:", selectedTechnician);
-      assignManually(selectedTechnician, id);
-    }
-    else {
-      // Optionally, handle the case where the user cancels the action
-      toast.error("Ticket assignment cancelled by the admin.");
-   }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You are about to assign this ticket.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, assign it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Show loader while request is being processed
+        const loader = Swal.fire({
+          title: 'Processing...',
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          }
+        });
+  
+        assignManually(selectedTechnician, id)
+          .then(() => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Ticket assigned successfully!',
+              showConfirmButton: false,
+              timer: 2000 // Automatically close after 2 seconds
+            });
+            loader.close(); // Close the loader once the request is complete
+            toast.success(`Selected technician ID: ${selectedTechnician}`);
+          })
+          .catch((error) => {
+            loader.close(); // Close the loader in case of error
+            console.error('Error assigning ticket:', error);
+            toast.error("An error occurred while assigning the ticket.");
+          });
+      } else {
+        toast.error("Ticket assignment cancelled by the admin.");
+      }
+    });
   };
+  
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -185,98 +304,69 @@ const SingleTicket = () => {
             {/* Welcome banner */}
             {/* <WelcomeBanner /> */}
             {/* Ticket Details */}
-            <div className="border border-gray-200 rounded overflow-hidden mb-2">
-              <div class="bg-white w-[650px] shadow overflow-hidden sm:rounded-lg">
-                <div class="px-4 py-5 sm:px-6">
-                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+            <div className="border border-gray-200 dark:border-gray-700 rounded overflow-hidden mb-2 w-full sm:w-4/5 md:w-3/5">
+              <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+                <div className="px-4 py-5 sm:px-6">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                     Ticket View
                   </h3>
-                  <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
                     Details Informations About Tickets.
                   </p>
                 </div>
-                <div class="border-t border-gray-200">
+                <div className="border-t border-gray-200 dark:border-gray-600">
                   <dl>
                     {ticket && ( // Check if ticket is not null
                       <>
-                        <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Ticket ID
                           </dt>
-                          <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                          <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
                             {ticket.uid}
                           </dd>
                         </div>
-                        <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                        <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Title
                           </dt>
-                          <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
                             {ticket.title}
                           </dd>
                         </div>
-                        <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Description
                           </dt>
-                          <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
                             {ticket.description}
                           </dd>
                         </div>
-                        <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                        <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Status
                           </dt>
-                          <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
                             {ticket.status}
                           </dd>
                         </div>
-                        <div className="bg-gray-50 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                        <div className="bg-gray-50 dark:bg-gray-700 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Assigned To
                           </dt>
-                          <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
                             {ticket.assigned_to
                               ? ticket.assigned_to.name
                               : "This ticket is yet to be assigned"}
                           </dd>
                         </div>
-
-                        <div className="bg-gray-50 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
-                          <dt className="text-sm font-medium text-gray-500">
+                        <div className="bg-gray-50 dark:bg-gray-700 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-40 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Assign Manually
                           </dt>
-                          <div className="relative mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-1">
-                            {/* <select
-                              className="block w-full border border-gray-300 rounded px-3 py-1"
-                              value={selectedTechnician}
-                              onChange={(e) => {
-                                setSelectedTechnician(e.target.value);
-                                console.log("this is technician id", e.target.value);
-                              }}
-                            >
-                              <option value="">Select</option>
-                              {technicians.map(
-                                ({
-                                  _id,
-                                  name,
-                                  day_schedule, // Add day_schedule to technician object destructuring
-                                }) => (
-                                  <option
-                                    key={_id}
-                                    value={_id}
-                                    disabled={day_schedule === "booked"} // Disable option if day_schedule is "booked"
-                                    style={{
-                                      color: day_schedule === "free" ? "green" : "black", // Color option green if day_schedule is "free"
-                                    }}
-                                  >
-                                    {name}
-                                  </option>
-                                )
-                              )}
-                            </select> */}
+                          <div className="relative mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2 flex items-center">
                             <select
-                              className="block w-full border border-gray-300 rounded px-3 py-1"
+                              className="block w-2/3 border border-gray-300 rounded px-3 py-1 mr-2"
                               value={selectedTechnician}
                               onChange={(e) => {
                                 setSelectedTechnician(e.target.value);
@@ -287,39 +377,34 @@ const SingleTicket = () => {
                               }}
                             >
                               <option value="">Select</option>
-                              {technicians.map(
-                                ({
-                                  _id,
-                                  name,
-                                  day_schedule, // Add day_schedule to technician object destructuring
-                                }) => (
-                                  <option
-                                    key={_id}
-                                    value={_id}
-                                    disabled={day_schedule === "booked"} // Disable option if day_schedule is "booked"
-                                    style={{
-                                      backgroundColor:
-                                        day_schedule === "free"
-                                          ? "lightgreen"
-                                          : "lightgrey", // Set background color
-                                      color:
-                                        day_schedule === "booked"
-                                          ? "gray"
-                                          : "black", // Set text color
-                                    }}
-                                  >
-                                    {name}
-                                  </option>
-                                )
-                              )}
+                              {technicians.map(({ _id, name, day_schedule }) => (
+                                <option
+                                  key={_id}
+                                  value={_id}
+                                  disabled={day_schedule === "booked"}
+                                  style={{
+                                    backgroundColor: day_schedule === "free" ? "lightgreen" : "lightgrey",
+                                    color: day_schedule === "booked" ? "gray" : "black",
+                                  }}
+                                >
+                                  {name}
+                                </option>
+                              ))}
                             </select>
-                            {/* {ticket && ticket.assigned_to && ( */} 
-                              {ticket &&  (
+                            {ticket && (
                               <button
                                 onClick={handleSubmit}
-                                className=" mt-1 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                className="h-3/4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-4 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
                               >
                                 Submit
+                              </button>
+                            )}
+                            {ticket && ticket.status == 'open' && (
+                              <button
+                                onClick={handleAutoAssign}
+                                className="h-3/4 bg-transparent whitespace-nowrap hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-5 ml-2 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
+                              >
+                                Auto Assign
                               </button>
                             )}
                           </div>
@@ -330,111 +415,108 @@ const SingleTicket = () => {
                 </div>
               </div>
             </div>
-            <div>
-              {/* Roster Details */}
-              <div className="border border-gray-200 rounded overflow-hidden mb-2">
-                <div class="bg-white min-w-[400px] shadow overflow-hidden sm:rounded-lg">
-                  <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Roster Details
-                    </h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                      Details Informations About Assistant
-                    </p>
-                  </div>
-                  <div class="border-t border-gray-200">
-                    <dl>
-                      {/* Check if both ticket and assigned_to are not null */}
-                      {ticket && ticket.assigned_to ? (
-                        <>
-                          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Name
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              {ticket.assigned_to.name}
-                            </dd>
-                          </div>
-                          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 gap-16 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Phone No
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              {ticket.assigned_to.phoneno}
-                            </dd>
-                          </div>
-                          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Rating
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              {ticket.assigned_to.rating}
-                            </dd>
-                          </div>
-                          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Skill Set
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              {ticket.assigned_to.skill_set}
-                            </dd>
-                          </div>
-                          <div className="bg-gray-50 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Experience
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              {ticket.assigned_to.experience_years + " years"}
-                            </dd>
-                          </div>
-                        </>
-                      ) : (
-                        // Render null values if either ticket or assigned_to is null
-                        <>
-                          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Name
-                            </dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                              No Technician Assigned
-                            </dd>
-                          </div>
-                          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Phone No
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              null
-                            </dd>
-                          </div>
-                          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Rating
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              null
-                            </dd>
-                          </div>
-                          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Skill Set
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              null
-                            </dd>
-                          </div>
-                          <div className="bg-gray-50 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
-                            <dt className="text-sm font-medium text-gray-500">
-                              Experience
-                            </dt>
-                            <dd className="mt-1 text-sm capitalize text-gray-900 sm:mt-0 sm:col-span-2">
-                              null
-                            </dd>
-                          </div>
-                        </>
-                      )}
-                    </dl>
-                  </div>
+            <div className="rounded overflow-hidden mb-2">
+              <div className="bg-white dark:bg-gray-800 min-w-[400px] shadow overflow-hidden sm:rounded-lg">
+                <div className="px-4 py-5 sm:px-6">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                    Roster Details
+                  </h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                    Details Informations About Assistant
+                  </p>
+                </div>
+                <div className="border-t border-gray-200 dark:border-gray-600">
+                  <dl>
+                    {/* Check if both ticket and assigned_to are not null */}
+                    {ticket && ticket.assigned_to ? (
+                      <>
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Name
+                          </dt>
+                          <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            {ticket.assigned_to.name}
+                          </dd>
+                        </div>
+                        <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 gap-16 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Phone No
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            {ticket.assigned_to.phoneno}
+                          </dd>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Rating
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            {ticket.assigned_to.rating + '/5'}
+                          </dd>
+                        </div>
+                        <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Skill Set
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            {ticket.assigned_to.skill_set}
+                          </dd>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Experience
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            {ticket.assigned_to.experience_years + " years"}
+                          </dd>
+                        </div>
+                      </>
+                    ) : (
+                      // Render null values if either ticket or assigned_to is null
+                      <>
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Name
+                          </dt>
+                          <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            No Technician Assigned
+                          </dd>
+                        </div>
+                        <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Phone No
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            null
+                          </dd>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Rating
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            null
+                          </dd>
+                        </div>
+                        <div className="bg-white dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Skill Set
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            null
+                          </dd>
+                        </div>
+                        <div className="bg-gray-50 dark:bg-gray-700 px-2 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            Experience
+                          </dt>
+                          <dd className="mt-1 text-sm capitalize text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2">
+                            null
+                          </dd>
+                        </div>
+                      </>
+                    )}
+                  </dl>
                 </div>
               </div>
             </div>
@@ -504,9 +586,19 @@ const SingleTicket = () => {
                   </GoogleMap>
                 )}
               </div>
+              {arrayPoints && <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
+                <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                  <h2 className="font-semibold text-slate-800 dark:text-slate-100">
+                    Directions To The User
+                  </h2>
+                </header>
+                <div>
+                  {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
+                </div>
+              </div>}
             </div>
           </div>
-          <ChatBotUI/>
+          <ChatBotUI />
         </main>
       </div>
     </div>

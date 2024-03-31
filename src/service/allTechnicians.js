@@ -97,22 +97,8 @@ export async function assignManually(selectedTechnicianId, ticketId) {
 
     // Check if the response status is 200 (or any other success status code)
     if (response.status === 200) {
-      // Display a message indicating that the page will refresh
-      console.log("Page will refresh in 3 seconds...");
-
-      // Start a countdown timer
-      let count = 3;
-      const timer = setInterval(() => {
-        console.log(`Refreshing in ${count}...`);
-        count--;
-
-        // When countdown finishes, reload the page
-        if (count === 0) {
-          clearInterval(timer);
-          // Reload the page
-          window.location.reload();
-        }
-      }, 1000);
+      // Reload the page
+      window.location.reload();
     } else {
       // Handle other status codes if needed
       console.log("Failed to assign technician to ticket:", response.data.message);
@@ -158,3 +144,61 @@ export const fetchTechniciansGraphs = async () => {
     throw new Error('Error fetching ticket:', error);
   }
 };
+
+
+
+
+
+
+export const fetchTicketInformation = async () => {
+  try {
+    // Assuming you have the access token stored in localStorage
+    const accessToken = localStorage.getItem('access_token');
+
+    const response = await axios.get('http://127.0.0.1:8000/llm/ticket_query', {
+      params: {
+        query: "status",
+        ticket_id: "6604221d025a56d353295dec",
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error fetching ticket information:', error);
+  }
+};
+
+
+
+
+export async function assignAutomatically(ticketId) {
+  const accesstoken = localStorage.getItem('access_token');
+  console.log("This function is getting called from allTechnician.js file");
+  console.log("Ticket ID:", ticketId);
+  const headers = {
+    Authorization: `Bearer ${accesstoken}`,
+  };
+  try {
+    // Make the API call to assign technician to ticket using PUT method
+    const response = await axios.put(
+      `http://localhost:8000/tickets/auto_assign_ticket?ticket_id=${ticketId}`,
+      null, // No data payload for a PUT request
+      { headers: headers } // Pass headers here
+    );
+
+    // Check if the response status is 200 (or any other success status code)
+    if (response.status === 200) {
+      // Reload the page
+      console.log(response.data.message);
+      return response.data.message;
+    } else {
+      // Handle other status codes if needed
+      console.log("Failed to assign technician to ticket:", response.data.message);
+    }
+  } catch (error) {
+    console.error("Error assigning technician to ticket:", error);
+  }
+}
