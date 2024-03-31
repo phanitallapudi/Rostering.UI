@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { BiEditAlt } from "react-icons/bi";
+import { BiFolderPlus } from "react-icons/bi";
+import { BiArchiveIn } from "react-icons/bi";
 
 function DashboardCard12() {
   const [recentActivity, setRecentActivity] = useState([]);
@@ -44,19 +47,13 @@ function DashboardCard12() {
             <ul className="my-1">
               <li className="flex px-2">
                 {/* Render activity icon based on the 'tag' */}
-                <div className={`w-9 h-9 rounded-full shrink-0 bg-${activity.tag === 'add' ? 'indigo' : activity.tag === 'modified' ? 'rose' : 'emerald'}-500 my-2 mr-3`}>
+                <div className={`w-9 h-9 rounded-full shrink-0 bg-${activity.tag === 'add' ? 'indigo' : activity.tag === 'modified' ? 'rose' : 'emerald'}-500 my-2 mr-3 flex items-center justify-center`}>
                   {activity.tag === 'add' ? (
-                    <svg className="w-9 h-9 fill-current text-indigo-50" viewBox="0 0 36 36">
-                      {/* Add icon paths */}
-                    </svg>
+                    <BiFolderPlus className="w-5 h-5 text-white" />
                   ) : activity.tag === 'modified' ? (
-                    <svg className="w-9 h-9 fill-current text-rose-50" viewBox="0 0 36 36">
-                      {/* Modified icon paths */}
-                    </svg>
+                    <BiEditAlt className="w-5 h-5 text-white" />
                   ) : (
-                    <svg className="w-9 h-9 fill-current text-emerald-50" viewBox="0 0 36 36">
-                      {/* Default icon paths */}
-                    </svg>
+                    <BiArchiveIn className="w-5 h-5 text-white" />
                   )}
                 </div>
                 <div className="grow flex items-center border-b border-slate-100 dark:border-slate-700 text-sm py-2">
