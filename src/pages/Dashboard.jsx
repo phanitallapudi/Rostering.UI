@@ -68,7 +68,7 @@ function Dashboard() {
               {/* Bar chart (Direct vs Indirect) */}
               <DashboardCard04 />
               {/* Line chart (Real Time Value) */}
-              <DashboardCard05 />
+              <DashboardCard12 />
               {/* Doughnut chart (Top Countries) */}
               <DashboardCard11 />
               {/* Table (Top Channels) */}
