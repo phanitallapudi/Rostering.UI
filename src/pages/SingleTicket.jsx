@@ -16,6 +16,8 @@ import { Button } from "@mui/material";
 import fetchRoutePoints from "../service/routeService";
 import AssignedMap from "../partials/customer/AssignedMap";
 import ChatBotUI from "../components/ChatBotUI";
+
+
 const starStyle = {
   width: "20px", // Adjust as needed
   height: "20px", // Adjust as needed
@@ -211,13 +213,37 @@ const SingleTicket = () => {
       confirmButtonText: 'Yes, assign it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        toast.success(`Selected technician ID: ${selectedTechnician}`);
-        assignManually(selectedTechnician, id);
+        // Show loader while request is being processed
+        const loader = Swal.fire({
+          title: 'Processing...',
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          }
+        });
+  
+        assignManually(selectedTechnician, id)
+          .then(() => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Ticket assigned successfully!',
+              showConfirmButton: false,
+              timer: 2000 // Automatically close after 2 seconds
+            });
+            loader.close(); // Close the loader once the request is complete
+            toast.success(`Selected technician ID: ${selectedTechnician}`);
+          })
+          .catch((error) => {
+            loader.close(); // Close the loader in case of error
+            console.error('Error assigning ticket:', error);
+            toast.error("An error occurred while assigning the ticket.");
+          });
       } else {
         toast.error("Ticket assignment cancelled by the admin.");
       }
     });
   };
+  
 
   return (
     <div className="flex h-screen overflow-hidden">

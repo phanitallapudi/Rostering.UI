@@ -97,22 +97,8 @@ export async function assignManually(selectedTechnicianId, ticketId) {
 
     // Check if the response status is 200 (or any other success status code)
     if (response.status === 200) {
-      // Display a message indicating that the page will refresh
-      console.log("Page will refresh in 3 seconds...");
-
-      // Start a countdown timer
-      let count = 3;
-      const timer = setInterval(() => {
-        console.log(`Refreshing in ${count}...`);
-        count--;
-
-        // When countdown finishes, reload the page
-        if (count === 0) {
-          clearInterval(timer);
-          // Reload the page
-          window.location.reload();
-        }
-      }, 1000);
+      // Reload the page
+      window.location.reload();
     } else {
       // Handle other status codes if needed
       console.log("Failed to assign technician to ticket:", response.data.message);
