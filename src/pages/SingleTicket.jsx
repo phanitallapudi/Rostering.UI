@@ -95,6 +95,8 @@ const SingleTicket = () => {
   const [user_location, setUserLocation] = useState('');
   const [tech_location, setTechnicianLocation] = useState('');
   const [arrayPoints, setArrayPoints] = useState(null);
+  const [autoAssignTriggered, setAutoAssignTriggered] = useState(false);
+  const [fetchrouteTrigger, setFetchRouteTrigger] = useState(false);
   //const accesstoken = localStorage.getItem('access_token');
 
   const accesstoken = localStorage.getItem("access_token");
@@ -135,6 +137,7 @@ const SingleTicket = () => {
         });
   
         toast.success(assignAutomaticallyCall);
+        setAutoAssignTriggered(true);
   
       } else {
         toast.error("Ticket auto-assignment cancelled by the admin.");
@@ -178,7 +181,7 @@ const SingleTicket = () => {
     if (id !== null && id !== undefined && id !== "") {
       fetchTicket();
     }
-  }, [id]);
+  }, [id, autoAssignTriggered, fetchrouteTrigger]);
 
 
   useEffect(() => {
@@ -215,6 +218,7 @@ const SingleTicket = () => {
       try {
         const response = await fetchRoutePoints(user_location, tech_location);
         setArrayPoints(response);
+        setFetchRouteTrigger(true);
         console.log("Response in singleTicket:", response);
       } catch (err) {
         console.log(err);
@@ -398,7 +402,7 @@ const SingleTicket = () => {
                             {ticket && ticket.status == 'open' && (
                               <button
                                 onClick={handleAutoAssign}
-                                className="h-3/4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-5 ml-2 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
+                                className="h-3/4 bg-transparent whitespace-nowrap hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-5 ml-2 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
                               >
                                 Auto Assign
                               </button>
@@ -582,7 +586,7 @@ const SingleTicket = () => {
                   </GoogleMap>
                 )}
               </div>
-              <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
+              {arrayPoints && <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
                 <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
                   <h2 className="font-semibold text-slate-800 dark:text-slate-100">
                     Directions To The User
@@ -591,7 +595,7 @@ const SingleTicket = () => {
                 <div>
                   {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
                 </div>
-              </div>
+              </div>}
             </div>
           </div>
           <ChatBotUI />
