@@ -25,5 +25,8 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     }
+  },
+  optimizeDeps: {
+    include: ['sweetalert2'], // Add SweetAlert2 to the list of dependencies to be optimized
   } 
 })

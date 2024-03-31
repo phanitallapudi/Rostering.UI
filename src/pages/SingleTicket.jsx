@@ -11,6 +11,7 @@ import {
   useLoadScript,
 } from "@react-google-maps/api";
 import { Toaster, toast } from "sonner";
+import Swal from 'sweetalert2';
 import { Button } from "@mui/material";
 import fetchRoutePoints from "../service/routeService";
 import AssignedMap from "../partials/customer/AssignedMap";
@@ -200,17 +201,22 @@ const SingleTicket = () => {
     setActiveMarker(marker);
   };
   const handleSubmit = () => {
-    const userConfirmation = window.confirm(
-      "Are you sure you want to assign this ticket?"
-    );
-
-    if (userConfirmation) {
-      toast.success("Selected technician ID:", selectedTechnician);
-      assignManually(selectedTechnician, id);
-    } else {
-      // Optionally, handle the case where the user cancels the action
-      toast.error("Ticket assignment cancelled by the admin.");
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You are about to assign this ticket.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, assign it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        toast.success(`Selected technician ID: ${selectedTechnician}`);
+        assignManually(selectedTechnician, id);
+      } else {
+        toast.error("Ticket assignment cancelled by the admin.");
+      }
+    });
   };
 
   return (
