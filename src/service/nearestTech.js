@@ -6,7 +6,7 @@ async function nearestTech(latitude, longitude, skillSet) {
       const encodedSkillSet = encodeURIComponent(skillSet);
   
       // Construct URL with latitude, longitude, and skill set
-      const apiUrl = `http://127.0.0.1:8000/technicians/nearest_technician?lat=${latitude}&long=${longitude}&skill_set=${encodedSkillSet}`;
+      const apiUrl = `https://rostering-ai.onrender.com/technicians/nearest_technician?lat=${latitude}&long=${longitude}&skill_set=${encodedSkillSet}`;
   
       // Make API call
       const response = await fetch(apiUrl);

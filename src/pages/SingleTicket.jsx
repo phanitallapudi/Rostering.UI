@@ -154,7 +154,7 @@ const SingleTicket = () => {
     const fetchTicket = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/tickets/get_single_ticket?_id=${id}`,
+          `https://rostering-ai.onrender.com/tickets/get_single_ticket?_id=${id}`,
           {
             headers: {
               Authorization: `Bearer ${accesstoken}`,

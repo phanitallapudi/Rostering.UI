@@ -9,7 +9,7 @@ export async function getAllTechnicians() {
   const accesstoken = localStorage.getItem('access_token');
   console.log(accesstoken);
   try {
-    const response = await axios.get('http://127.0.0.1:8000/technicians/all_technicians', {
+    const response = await axios.get('https://rostering-ai.onrender.com/technicians/all_technicians', {
       headers: {
         Authorization: `Bearer ${accesstoken}`,
       },
@@ -25,7 +25,7 @@ export async function getAllTickets() {
   const accesstoken = localStorage.getItem('access_token');
   console.log(accesstoken);
   try {
-    const response = await axios.get('http://127.0.0.1:8000/tickets/all_tickets', {
+    const response = await axios.get('https://rostering-ai.onrender.com/tickets/all_tickets', {
       headers: {
         Authorization: `Bearer ${accesstoken}`,
       },
@@ -40,7 +40,7 @@ export async function getAllTickets() {
 
 export const fetchTicket = async (id) => {
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/tickets/get_single_ticket?_id=${id}`);
+    const response = await axios.get(`https://rostering-ai.onrender.com/tickets/get_single_ticket?_id=${id}`);
     return response.data;
   } catch (error) {
     throw new Error('Error fetching ticket:', error);
@@ -57,7 +57,7 @@ export async function nearestTech(latitude, longitude, skillSet) {
     const encodedSkillSet = encodeURIComponent(skillSet);
 
     // Construct URL with latitude, longitude, and skill set
-    const apiUrl = `http://127.0.0.1:8000/technicians/nearest_technician?lat=${latitude}&long=${longitude}&skill_set=${encodedSkillSet}`;
+    const apiUrl = `https://rostering-ai.onrender.com/technicians/nearest_technician?lat=${latitude}&long=${longitude}&skill_set=${encodedSkillSet}`;
 
     const headers = {
       Authorization: `Bearer ${accesstoken}`,
@@ -90,7 +90,7 @@ export async function assignManually(selectedTechnicianId, ticketId) {
   try {
     // Make the API call to assign technician to ticket using PUT method
     const response = await axios.put(
-      `http://127.0.0.1:8000/tickets/assign_ticket?ticket_id=${ticketId}&technician_id=${selectedTechnicianId}`,
+      `https://rostering-ai.onrender.com/tickets/assign_ticket?ticket_id=${ticketId}&technician_id=${selectedTechnicianId}`,
       null, // No data payload for a PUT request
       { headers: headers } // Pass headers here
     );
@@ -113,7 +113,7 @@ export const fetchTicketGraphs = async () => {
   const accesstoken = localStorage.getItem('access_token');
   console.log(accesstoken);
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_tickets`,
+    const response = await axios.get(`https://rostering-ai.onrender.com/infographics/get_infographics_tickets`,
     {
       headers: {
         Authorization: `Bearer ${accesstoken}`,
@@ -132,7 +132,7 @@ export const fetchTechniciansGraphs = async () => {
   const accesstoken = localStorage.getItem('access_token');
   console.log(accesstoken);
   try {
-    const response = await axios.get(`http://127.0.0.1:8000/infographics/get_infographics_technicians`,
+    const response = await axios.get(`https://rostering-ai.onrender.com/infographics/get_infographics_technicians`,
     {
       headers: {
         Authorization: `Bearer ${accesstoken}`,
@@ -155,7 +155,7 @@ export const fetchTicketInformation = async () => {
     // Assuming you have the access token stored in localStorage
     const accessToken = localStorage.getItem('access_token');
 
-    const response = await axios.get('http://127.0.0.1:8000/llm/ticket_query', {
+    const response = await axios.get('https://rostering-ai.onrender.com/llm/ticket_query', {
       params: {
         query: "status",
         ticket_id: "6604221d025a56d353295dec",
@@ -184,7 +184,7 @@ export async function assignAutomatically(ticketId) {
   try {
     // Make the API call to assign technician to ticket using PUT method
     const response = await axios.put(
-      `http://localhost:8000/tickets/auto_assign_ticket?ticket_id=${ticketId}`,
+      `https://rostering-ai.onrender.com/tickets/auto_assign_ticket?ticket_id=${ticketId}`,
       null, // No data payload for a PUT request
       { headers: headers } // Pass headers here
     );

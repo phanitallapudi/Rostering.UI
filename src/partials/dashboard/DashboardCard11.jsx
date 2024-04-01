@@ -15,7 +15,7 @@ function DashboardCard11() {
     const accessToken = localStorage.getItem('access_token');
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/technicians/top_technicians', {
+        const response = await axios.get('https://rostering-ai.onrender.com/technicians/top_technicians', {
           headers: {
             'accept': 'application/json',
             'Authorization': `Bearer ${accessToken}`

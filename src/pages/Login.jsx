@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/login',
+        'https://rostering-ai.onrender.com/login',
         new URLSearchParams({
           grant_type: 'password',
           username: username,

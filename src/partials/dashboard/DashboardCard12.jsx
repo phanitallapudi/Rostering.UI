@@ -11,7 +11,7 @@ function DashboardCard12() {
     const accessToken = localStorage.getItem('access_token');
     const fetchRecentActivity = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/activity/get_recent_activity', {
+        const response = await fetch('https://rostering-ai.onrender.com/activity/get_recent_activity', {
           method: 'GET',
           headers: {
             'Accept': 'application/json',

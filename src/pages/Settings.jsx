@@ -46,7 +46,7 @@ const Settings = () => {
       formData.append('file', file);
 
       const response = await axios.post(
-        "http://localhost:8000/technicians/upload_technician_files",
+        "https://rostering-ai.onrender.com/technicians/upload_technician_files",
         formData,
         {
           headers: {

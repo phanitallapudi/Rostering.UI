@@ -42,7 +42,7 @@ const ChatBotUI = ({ ticketId }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/llm/ticket_query', {
+      const response = await axios.get('https://rostering-ai.onrender.com/llm/ticket_query', {
         params: {
           query: message,
           ticket_id: ticketId,
