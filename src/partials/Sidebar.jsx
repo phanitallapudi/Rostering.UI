@@ -166,10 +166,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <span className="pl-3">Settings</span>
               </Link>
               <button onClick={logoutHandler} className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
-                <span className='px-2'>
+                <span className='px-3'>
                   <IoLogOut size={25}/>
                 </span>
+                <p className='ml-1'>
                 Logout
+                </p>
               </button>
             </ul>
           </div>
