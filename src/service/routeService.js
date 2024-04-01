@@ -29,9 +29,10 @@ const fetchRoutePoints = async (userLocation, techLocation) => {
         console.log(data.routes[0].legs[0].points);
 
         // Return the fetched route points
-        // console.log(response);
+        console.log(data);
         // return data.points;
-        return data.routes[0].legs[0].points
+        console.log(data.routes[0].summary);
+        return data;
     } catch (error) {
         console.error('Error fetching route points:', error);
         throw error;

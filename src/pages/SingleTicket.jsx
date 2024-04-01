@@ -97,6 +97,7 @@ const SingleTicket = () => {
   const [arrayPoints, setArrayPoints] = useState(null);
   const [autoAssignTriggered, setAutoAssignTriggered] = useState(false);
   const [fetchrouteTrigger, setFetchRouteTrigger] = useState(false);
+  const [mapData, setMapData] = useState(null);
   //const accesstoken = localStorage.getItem('access_token');
 
   const accesstoken = localStorage.getItem("access_token");
@@ -116,7 +117,7 @@ const SingleTicket = () => {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, assign it!'
       });
-  
+
       if (result.isConfirmed) {
         const loader = Swal.fire({
           title: 'Processing...',
@@ -125,20 +126,20 @@ const SingleTicket = () => {
             Swal.showLoading();
           }
         });
-  
+
         const assignAutomaticallyCall = await assignAutomatically(ticket._id);
         loader.close();
-  
+
         Swal.fire({
           icon: 'success',
           title: 'Done',
           showConfirmButton: false,
           timer: 2000 // Automatically close after 2 seconds
         });
-  
+
         toast.success(assignAutomaticallyCall);
         setAutoAssignTriggered(true);
-  
+
       } else {
         toast.error("Ticket auto-assignment cancelled by the admin.");
       }
@@ -147,7 +148,7 @@ const SingleTicket = () => {
       toast.error("An error occurred while automatically assigning the ticket.");
     }
   };
-  
+
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -217,7 +218,10 @@ const SingleTicket = () => {
     const fetchArray = async () => {
       try {
         const response = await fetchRoutePoints(user_location, tech_location);
-        setArrayPoints(response);
+        // data.routes[0].legs[0].points
+        console.log("from singleTicket page ", response.routes[0].summary);
+        setArrayPoints(response.routes[0].legs[0].points);
+        setMapData(response.routes[0].summary);
         setFetchRouteTrigger(true);
         console.log("Response in singleTicket:", response);
       } catch (err) {
@@ -268,7 +272,7 @@ const SingleTicket = () => {
             Swal.showLoading();
           }
         });
-  
+
         assignManually(selectedTechnician, id)
           .then(() => {
             Swal.fire({
@@ -290,7 +294,7 @@ const SingleTicket = () => {
       }
     });
   };
-  
+
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -527,7 +531,7 @@ const SingleTicket = () => {
             <div className="flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
               <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-100">
-                  Nearest Technicians Locations
+                  Nearest Technician Location
                 </h2>
               </header>
               <div>
@@ -586,16 +590,81 @@ const SingleTicket = () => {
                   </GoogleMap>
                 )}
               </div>
-              {arrayPoints && <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
-                <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-                  <h2 className="font-semibold text-slate-800 dark:text-slate-100">
-                    Directions To The User
-                  </h2>
-                </header>
-                <div>
-                  {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
+              {mapData &&
+                <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
+                  <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                    <h2 className="font-semibold text-slate-800 dark:text-slate-100">
+                      Navigation Response
+                    </h2>
+                  </header>
+                  <div className="p-5 sm:grid sm:grid-cols-2 sm:gap-2 sm:px-6">
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Distance in Kilometers</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{mapData.lengthInMeters / 1000} Km</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Travel Time (Seconds)</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.travelTimeInSeconds / 60)} minutes and {mapData.travelTimeInSeconds % 60} seconds</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Traffic Delay (Seconds)</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.trafficDelayInSeconds / 60)} minutes and {mapData.trafficDelayInSeconds % 60} seconds</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Traffic Length in Kilometer</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{mapData.trafficLengthInMeters/1000} Km</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Departure Time</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{new Date(mapData.departureTime).toLocaleString()}</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Arrival Time</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{new Date(mapData.arrivalTime).toLocaleString()}</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">No Traffic Travel Time (Seconds)</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.noTrafficTravelTimeInSeconds/60)} minutes and {mapData.trafficDelayInSeconds % 60} seconds</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Historic Traffic Travel Time (Seconds)</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.historicTrafficTravelTimeInSeconds/60)} minutes and {mapData.historicTrafficTravelTimeInSeconds % 60} seconds</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Live Traffic Incidents Travel Time (Seconds)</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.liveTrafficIncidentsTravelTimeInSeconds / 60)} minutes and {mapData.liveTrafficIncidentsTravelTimeInSeconds % 60} seconds</dd>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Fuel Consumption (Liters)</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{mapData.fuelConsumptionInLiters.toFixed(2)}</dd>
+                    </div>
+                  </div>
+                </div>}
+
+
+
+              {arrayPoints && (
+                <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
+                  <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                    <h2 className="font-semibold text-slate-800 dark:text-slate-100">
+                      Directions Insight
+                    </h2>
+                  </header>
+                  <div>
+                    {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
+                  </div>
                 </div>
-              </div>}
+              )}
+
             </div>
           </div>
           <ChatBotUI ticketId={ticket && ticket._id} />
