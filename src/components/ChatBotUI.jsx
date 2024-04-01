@@ -83,17 +83,23 @@ const ChatBotUI = ({ ticketId }) => {
           <div className="flex-1 mb-4 overflow-y-auto">
             {conversation.map((msg, index) => (
               <div key={index} className={`flex justify-${msg.isUser ? 'end' : 'start'}`}>
-                <div className={`p-2 mt-2 rounded-lg max-w-xs ${msg.isUser ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200 text-black mr-auto'}`}>
+                {!msg.isUser && (
+                  <svg className='w-5 h-5 mt-4 ml-0' fill="#8E24AA" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 10.975V8a2 2 0 0 0-2-2h-6V4.688c.305-.274.5-.668.5-1.11a1.5 1.5 0 0 0-3 0c0 .442.195.836.5 1.11V6H5a2 2 0 0 0-2 2v2.998l-.072.005A.999.999 0 0 0 2 12v2a1 1 0 0 0 1 1v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a1 1 0 0 0 1-1v-1.938a1.004 1.004 0 0 0-.072-.455c-.202-.488-.635-.605-.928-.632zM7 12c0-1.104.672-2 1.5-2s1.5.896 1.5 2-.672 2-1.5 2S7 13.104 7 12zm8.998 6c-1.001-.003-7.997 0-7.998 0v-2s7.001-.002 8.002 0l-.004 2zm-.498-4c-.828 0-1.5-.896-1.5-2s.672-2 1.5-2 1.5.896 1.5 2-.672 2-1.5 2z"/></svg>
+                )}
+                <div className={`p-2 mt-2 max-w-[252px] rounded-lg ${msg.isUser ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200 text-black mr-auto'}`}>
                   {msg.text}
                 </div>
+                {msg.isUser && (
+                  <svg className='w-5 h-5 mt-4 ml--0' fill="#8E24AA" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 9.25c-2.27 0-2.73-3.44-2.73-3.44C7 4.02 7.82 2 9.97 2c2.16 0 2.98 2.02 2.71 3.81 0 0-.41 3.44-2.68 3.44zm0 2.57L12.72 10c2.39 0 4.52 2.33 4.52 4.53v2.49s-3.65 1.13-7.24 1.13c-3.65 0-7.24-1.13-7.24-1.13v-2.49c0-2.25 1.94-4.48 4.47-4.48z"/></svg>
+                )}
               </div>
             ))}
             {isLoading && ( // Show loader if isLoading is true
               <div className="flex justify-start">
                 <div className="loader p-2 mt-1 flex flex-row gap-[2px] rounded-lg max-w-xs bg-gray-200 text-black mr-auto">
-                <div class='h-3 w-3 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
-	<div class='h-3 w-3 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
-	<div class='h-3 w-3 bg-gray-500 rounded-full animate-bounce'></div>
+                  <div className='h-3 w-3 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+                  <div className='h-3 w-3 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+                  <div className='h-3 w-3 bg-gray-500 rounded-full animate-bounce'></div>
                 </div>
               </div>
             )}

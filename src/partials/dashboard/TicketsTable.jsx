@@ -38,7 +38,8 @@ const TicketsTable = () => {
   useEffect(() => {
     const filtered = tickets.filter((ticket) => {
       return (
-        ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         String(ticket.uid).toLowerCase().includes(searchTerm.toLowerCase())) &&
         (statusFilter === "" ||
           ticket.status.toLowerCase() === statusFilter.toLowerCase())
       );
