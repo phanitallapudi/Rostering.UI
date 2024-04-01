@@ -39,11 +39,11 @@ function DashboardCard12() {
         {recentActivity.map(activity => (
           <div key={activity._id}>
             {/* Only render header for "Yesterday" and older activities */}
-            {activity.created_at.split(' ')[0] !== new Date().toISOString().split('T')[0] && (
+            {/* {activity.created_at.split(' ')[0] !== new Date().toISOString().split('T')[0] && (
               <header className="text-xs uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50 rounded-sm font-semibold p-2">
                 Yesterday
               </header>
-            )}
+            )} */}
             <ul className="my-1">
               <li className="flex px-2">
                 {/* Render activity icon based on the 'tag' */}

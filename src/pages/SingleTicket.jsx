@@ -598,7 +598,7 @@ const SingleTicket = () => {
               </div>}
             </div>
           </div>
-          <ChatBotUI />
+          <ChatBotUI ticketId={ticket && ticket._id} />
         </main>
       </div>
     </div>

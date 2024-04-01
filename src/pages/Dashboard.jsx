@@ -19,6 +19,7 @@ import DashboardCard12 from '../partials/dashboard/DashboardCard12';
 import DashboardCard13 from '../partials/dashboard/DashboardCard13';
 import Banner from '../partials/Banner';
 import { Navigate, useNavigate } from 'react-router';
+import AuthCheckToken from '../components/Authchecktoken';
 // import { fetchTicketInformation } from '../service/allTechnicians';
 
 
@@ -33,6 +34,14 @@ function Dashboard() {
       navigate('/');
     }
   },[authcheck])
+
+  useEffect(() => {
+    if (AuthCheckToken(authcheck)) {
+      localStorage.removeItem('access_token'); // Remove the expired token
+      navigate('/'); // Redirect to the login page
+    }
+ }, [authcheck, history]);
+
 
 
   const [sidebarOpen, setSidebarOpen] = useState(false);

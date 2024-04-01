@@ -133,43 +133,45 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <span className='px-2'>
                   <MdSpaceDashboard size={25}/>
                 </span>
-                Dashboard
+                <span className="pl-3">Dashboard</span>
               </Link>
               <Link to="/tickets" className='hover:bg-gray-700 w-44 px-2 py-3 rounded-md text-white flex items-center justify-start'>
                 <span className='px-2'>
                   <FaTicketSimple size={25}/>
                 </span>
-                Tickets
+                <span className="pl-3">Tickets</span>
               </Link>
               <Link to="/roster" className='hover:bg-gray-700 px-2 w-44 py-3 rounded-md text-white flex items-center justify-start'>
                 <span className='px-2'>
                   <FaUserCog size={25}/>
                 </span> 
-                Technician
+                <span className="pl-3">Technician</span>
               </Link>
               <Link to="/dispatch" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span className='px-2'>
                   <AiFillSchedule size={25}/>
                 </span>
-                Scheduler
+                <span className="pl-3">Scheduler</span>
               </Link>
               <Link to="/analytics" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span className='px-2'>
                   <IoMdAnalytics size={25}/>
                 </span>
-                Analytics
+                <span className="pl-3">Analytics</span>
               </Link>
               <Link to="/settings" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span className='px-2'>
                   <IoSettings size={25}/>
                 </span>
-                Settings
+                <span className="pl-3">Settings</span>
               </Link>
               <button onClick={logoutHandler} className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
-                <span className='px-2'>
+                <span className='px-3'>
                   <IoLogOut size={25}/>
                 </span>
+                <p className='ml-1'>
                 Logout
+                </p>
               </button>
             </ul>
           </div>

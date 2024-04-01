@@ -23,6 +23,7 @@ import SingleTicket from './pages/SingleTicket';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
 import AnalyticsGraphsTechnician from './components/AnalyticsGraphsTechnician';
+import ChatBotUI from './components/ChatBotUI';
 
 function App() {
 
@@ -49,6 +50,7 @@ function App() {
         <Route exact path="/roster" element={<Roster />} />
         <Route exact path="/technicianGraph" element={<AnalyticsGraphsTechnician />} />
         <Route exact path="/tickets/:id" element={<SingleTicket/>} />
+        <Route exact path="/chatbot" element={<ChatBotUI/>} />
       </Routes>
     </>
   );
