@@ -649,9 +649,6 @@ const SingleTicket = () => {
                     </div>
                   </div>
                 </div>}
-
-
-
               {arrayPoints && (
                 <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
                   <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
@@ -659,7 +656,7 @@ const SingleTicket = () => {
                       Directions Insight
                     </h2>
                   </header>
-                  <div>
+                  <div style={{zIndex : '2'}}>
                     {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
                   </div>
                 </div>
