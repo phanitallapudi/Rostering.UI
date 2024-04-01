@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState, useContext, createContext, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
+import { fetchTicketInformationWithAuthorization } from './fetchTicket';
 // eslint-disable-next-line
 const ResultContext = createContext();
 
@@ -21,8 +22,6 @@ export const ResultContextProvider = ({children}) => {
     
         fetchData();
       }, []);
-    
-
     
     return (
         <ResultContext.Provider value={{ticket}}>
