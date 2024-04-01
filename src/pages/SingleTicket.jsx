@@ -108,6 +108,7 @@ const SingleTicket = () => {
         );
         setTicket(response.data);
         console.log(response.data);
+        console.log(response.data._id);
         console.log(response.data.assigned_to._id);
       } catch (error) {
         // console.error("Error fetching ticket:", error);
@@ -506,7 +507,7 @@ const SingleTicket = () => {
               </div>
             </div>
           </div>
-          <ChatBotUI/>
+          <ChatBotUI ticketId={ticket && ticket._id} />
         </main>
       </div>
     </div>
