@@ -120,49 +120,49 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               </span>
               <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">Pages</span>
             </h3> */}
-            <ul className="mt-3 ml-6 flex flex-col justify-center items-start">
+            <ul className="mt-3 ml-2 flex flex-col justify-center items-start">
               {/* Dashboard */}
               <Link to="/dashboard" className='hover:bg-gray-700 px-1 w-44 py-3 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <MdSpaceDashboard size={25}/>
                 </span>
-                <span className="pl-3">Dashboard</span>
+                <span className="pl-8">Dashboard</span>
               </Link>
               <Link to="/tickets" className='hover:bg-gray-700 w-44 px-2 py-3 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <FaTicketSimple size={25}/>
                 </span>
-                <span className="pl-3">Tickets</span>
+                <span className="pl-8">Tickets</span>
               </Link>
               <Link to="/roster" className='hover:bg-gray-700 px-2 w-44 py-3 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <FaUserCog size={25}/>
                 </span> 
-                <span className="pl-3">Technician</span>
+                <span className="pl-8">Technician</span>
               </Link>
               <Link to="/dispatch" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <AiFillSchedule size={25}/>
                 </span>
-                <span className="pl-3">Scheduler</span>
+                <span className="pl-8">Scheduler</span>
               </Link>
               <Link to="/analytics" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <IoMdAnalytics size={25}/>
                 </span>
-                <span className="pl-3">Analytics</span>
+                <span className="pl-8">Analytics</span>
               </Link>
               <Link to="/settings" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <IoSettings size={25}/>
                 </span>
-                <span className="pl-3">Settings</span>
+                <span className="pl-8">Settings</span>
               </Link>
               <Link to="/" className='hover:bg-gray-700 px-2 py-3 w-44 rounded-md text-white flex items-center justify-start'>
                 <span>
                   <IoLogOut size={25}/>
                 </span>
-                <span className="pl-3">Logout</span>
+                <span className="pl-8">Logout</span>
               </Link>
             </ul>
           </div>

@@ -88,7 +88,7 @@ const TicketsTable = () => {
         <div>
           <input
             type="text"
-            placeholder="Search by title..."
+            placeholder="Search by uid or title..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="border border-gray-300 rounded px-3 py-1 mr-2"
