@@ -604,12 +604,12 @@ const SingleTicket = () => {
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
-                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Travel Time (Seconds)</dt>
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Travel Time</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.travelTimeInSeconds / 60)} minutes and {mapData.travelTimeInSeconds % 60} seconds</dd>
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
-                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Traffic Delay (Seconds)</dt>
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Traffic Delay</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.trafficDelayInSeconds / 60)} minutes and {mapData.trafficDelayInSeconds % 60} seconds</dd>
                     </div>
 
@@ -629,23 +629,23 @@ const SingleTicket = () => {
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
-                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">No Traffic Travel Time (Seconds)</dt>
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">No Traffic Travel Time</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.noTrafficTravelTimeInSeconds/60)} minutes and {mapData.trafficDelayInSeconds % 60} seconds</dd>
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
-                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Historic Traffic Travel Time (Seconds)</dt>
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Historic Traffic Travel Time</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.historicTrafficTravelTimeInSeconds/60)} minutes and {mapData.historicTrafficTravelTimeInSeconds % 60} seconds</dd>
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
-                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Live Traffic Incidents Travel Time (Seconds)</dt>
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Live Traffic Incidents Travel Time</dt>
                       <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{Math.floor(mapData.liveTrafficIncidentsTravelTimeInSeconds / 60)} minutes and {mapData.liveTrafficIncidentsTravelTimeInSeconds % 60} seconds</dd>
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:col-span-1">
-                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Fuel Consumption (Liters)</dt>
-                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{mapData.fuelConsumptionInLiters.toFixed(2)}</dd>
+                      <dt className="text-sm font-semibold text-gray-500 dark:text-gray-400">Fuel Consumption</dt>
+                      <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">{mapData.fuelConsumptionInLiters.toFixed(2)} L</dd>
                     </div>
                   </div>
                 </div>}
