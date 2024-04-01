@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
-import { nearestTech, assignManually } from "../service/allTechnicians";
+import { nearestTech, assignManually, assignAutomatically } from "../service/allTechnicians";
 import {
   GoogleMap,
   InfoWindowF,
@@ -95,6 +95,8 @@ const SingleTicket = () => {
   const [user_location, setUserLocation] = useState('');
   const [tech_location, setTechnicianLocation] = useState('');
   const [arrayPoints, setArrayPoints] = useState(null);
+  const [autoAssignTriggered, setAutoAssignTriggered] = useState(false);
+  const [fetchrouteTrigger, setFetchRouteTrigger] = useState(false);
   //const accesstoken = localStorage.getItem('access_token');
 
   const accesstoken = localStorage.getItem("access_token");
@@ -102,6 +104,50 @@ const SingleTicket = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_MAP_API_KEY,
   });
+
+  const handleAutoAssign = async () => {
+    try {
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to automatically assign this ticket.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, assign it!'
+      });
+  
+      if (result.isConfirmed) {
+        const loader = Swal.fire({
+          title: 'Processing...',
+          allowOutsideClick: false,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+          }
+        });
+  
+        const assignAutomaticallyCall = await assignAutomatically(ticket._id);
+        loader.close();
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Done',
+          showConfirmButton: false,
+          timer: 2000 // Automatically close after 2 seconds
+        });
+  
+        toast.success(assignAutomaticallyCall);
+        setAutoAssignTriggered(true);
+  
+      } else {
+        toast.error("Ticket auto-assignment cancelled by the admin.");
+      }
+    } catch (error) {
+      console.error('Error assigning ticket:', error);
+      toast.error("An error occurred while automatically assigning the ticket.");
+    }
+  };
+  
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -135,7 +181,7 @@ const SingleTicket = () => {
     if (id !== null && id !== undefined && id !== "") {
       fetchTicket();
     }
-  }, [id]);
+  }, [id, autoAssignTriggered, fetchrouteTrigger]);
 
 
   useEffect(() => {
@@ -172,6 +218,7 @@ const SingleTicket = () => {
       try {
         const response = await fetchRoutePoints(user_location, tech_location);
         setArrayPoints(response);
+        setFetchRouteTrigger(true);
         console.log("Response in singleTicket:", response);
       } catch (err) {
         console.log(err);
@@ -352,9 +399,15 @@ const SingleTicket = () => {
                                 Submit
                               </button>
                             )}
+                            {ticket && ticket.status == 'open' && (
+                              <button
+                                onClick={handleAutoAssign}
+                                className="h-3/4 bg-transparent whitespace-nowrap hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-1 px-5 ml-2 border border-blue-500 hover:border-transparent rounded" // Set height to match select dropdown height
+                              >
+                                Auto Assign
+                              </button>
+                            )}
                           </div>
-
-
                         </div>
                       </>
                     )}
@@ -421,7 +474,7 @@ const SingleTicket = () => {
                     ) : (
                       // Render null values if either ticket or assigned_to is null
                       <>
-                        <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
+                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-24 sm:px-6">
                           <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Name
                           </dt>
@@ -533,7 +586,7 @@ const SingleTicket = () => {
                   </GoogleMap>
                 )}
               </div>
-              <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
+              {arrayPoints && <div className="mt-10 flex flex-col col-span-full sm:col-span-12 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 h-screen">
                 <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
                   <h2 className="font-semibold text-slate-800 dark:text-slate-100">
                     Directions To The User
@@ -542,7 +595,7 @@ const SingleTicket = () => {
                 <div>
                   {arrayPoints ? <AssignedMap ticket={ticket} routePoints={arrayPoints} /> : ''}
                 </div>
-              </div>
+              </div>}
             </div>
           </div>
           <ChatBotUI />

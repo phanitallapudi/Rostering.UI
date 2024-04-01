@@ -27,8 +27,24 @@ const TechnicalRosterTable = () => {
     fetchTechnicians();
   }, []);
 
+  // const filteredTechnicians = technicians.filter((technician) => {
+  //   if (searchTerm && !technician.skill_set.toLowerCase().includes(searchTerm.toLowerCase())) {
+  //     return false;
+  //   }
+  //   if (statusFilter !== 'all' && technician.day_schedule.toLowerCase() !== statusFilter.toLowerCase()) {
+  //     return false;
+  //   }
+  //   return true;
+  // });
+
+
   const filteredTechnicians = technicians.filter((technician) => {
-    if (searchTerm && !technician.skill_set.toLowerCase().includes(searchTerm.toLowerCase())) {
+    // Convert uid to string and then check if the search term is included in either the skill set, name, or uid
+    const searchIncludesSkillOrNameOrUid = technician.skill_set.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                           technician.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                           String(technician.uid).toLowerCase().includes(searchTerm.toLowerCase());
+  
+    if (searchTerm && !searchIncludesSkillOrNameOrUid) {
       return false;
     }
     if (statusFilter !== 'all' && technician.day_schedule.toLowerCase() !== statusFilter.toLowerCase()) {
@@ -36,6 +52,8 @@ const TechnicalRosterTable = () => {
     }
     return true;
   });
+  
+   
 
   const sortedTechnicians = sortBy ? filteredTechnicians.sort((a, b) => {
     if (sortOrder === 'asc') {
@@ -109,7 +127,7 @@ const TechnicalRosterTable = () => {
         <div>
           <input
             type="text"
-            placeholder="Search by skill set"
+            placeholder="Search"
             value={searchTerm}
             onChange={handleSearchChange}
             className="border border-gray-300 rounded-md px-2 py-1 mr-2"
