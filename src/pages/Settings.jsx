@@ -5,6 +5,7 @@ import Header from "../partials/Header";
 import { Toaster, toast } from 'sonner'
 import UploadFile from "../images/upload.png";
 import Loader from "../components/Loader";
+import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,6 +13,8 @@ const Settings = () => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const accessToken = localStorage.getItem('access_token');
+
+  const navigate = useNavigate();
 
   const handleFileInputChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -58,6 +61,7 @@ const Settings = () => {
       console.log(response.data.message); // Handle response as needed
       toast.success(response.data.message);
       setFileName(""); // Clear file name after upload
+      navigate('/roster')
     } catch (error) {
       if (error.response && error.response.data && error.response.data.detail) {
         toast.error('Error uploading file: ' + error.response.data.detail);

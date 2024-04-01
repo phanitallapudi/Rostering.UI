@@ -598,7 +598,7 @@ const SingleTicket = () => {
               </div>}
             </div>
           </div>
-          <ChatBotUI />
+          {/* <ChatBotUI /> */}
         </main>
       </div>
     </div>
